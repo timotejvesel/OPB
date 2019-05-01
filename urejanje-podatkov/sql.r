@@ -8,17 +8,16 @@ source("auth.R")
 
 # Povežemo se z gonilnikom za PostgreSQL
 drv <- dbDriver("PostgreSQL")
+conn <- dbConnect(drv, dbname = db, host = host,
+                  user = user, password = password)
 
 # Uporabimo tryCatch,
 # da prisilimo prekinitev povezave v primeru napake
 
 tryCatch({
   # Vzpostavimo povezavo
-  conn <- dbConnect(drv, dbname = db, host = host,
-                    user = user, password = password)
   
-
-  dbSendQuery(conn, build_sql("CREATE TABLE vojna (
+ dbSendQuery(conn, build_sql("CREATE TABLE vojna (
                               id INTEGER PRIMARY KEY,
                               ime TEXT NOT NULl,
                               zacetek DATE,
@@ -26,6 +25,11 @@ tryCatch({
                               zmagovalec TEXT,
                               območje TEXT)"))
   
+  dbSendQuery(conn, build_sql("CREATE TABLE drzava (
+                              id SERIAL PRIMARY KEY
+                              ime TEXT
+                              prestolnica TEXT,
+                              prebivalstvo INTEGER)"))
   
   dbSendQuery(conn, build_sql(" CREATE TABLE sodelujoci (
                               id SERIAL PRIMARY KEY,
@@ -34,16 +38,6 @@ tryCatch({
                               drzava_id REFERENCES drzava(id) FOREIGN KEY,
                               je_skupina BOOLEAN)"))
                             
-  
-  
-  dbSendQuery(conn, build_sql("CREATE TABLE drzava (
-                              id SERIAL PRIMARY KEY
-                              ime TEXT
-                              prestolnica TEXT,
-                              prebivalstvo INTEGER)"))
-  
-
-  
   dbSendQuery(conn, build_sql("CREATE TABLE koalicija (
                               id SERIAL PRIMARY KEY, 
                               clani TEXT,
