@@ -8,47 +8,43 @@ source("auth.R")
 
 # Povežemo se z gonilnikom za PostgreSQL
 drv <- dbDriver("PostgreSQL")
+conn <- dbConnect(drv, dbname = db, host = host,
+                  user = user, password = password)
 
 # Uporabimo tryCatch,
 # da prisilimo prekinitev povezave v primeru napake
 
 tryCatch({
   # Vzpostavimo povezavo
-  conn <- dbConnect(drv, dbname = db, host = host,
-                    user = user, password = password)
   
-
-  dbSendQuery(conn, build_sql("CREATE TABLE vojna (
+ dbSendQuery(conn, build_sql("CREATE TABLE vojna (
                               id INTEGER PRIMARY KEY,
-                              ime TEXT NOT NULl,
+                              ime TEXT NOT NULL,
                               zacetek DATE,
                               konec DATE,
                               zmagovalec TEXT,
-                              območje TEXT)"))
+                              obmocje TEXT)", con = conn))
   
+  dbSendQuery(conn, build_sql("CREATE TABLE drzava (
+                              id SERIAL PRIMARY KEY,
+                              ime TEXT,
+                              prestolnica TEXT,
+                              prebivalstvo INTEGER)", con = conn))
   
   dbSendQuery(conn, build_sql(" CREATE TABLE sodelujoci (
                               id SERIAL PRIMARY KEY,
                               ime TEXT,
                               cas_obstoja TEXT,
-                              drzava_id REFERENCES drzava(id) FOREIGN KEY,
-                              je_skupina BOOLEAN)"))
+                              drzava_id INTEGER NOT NULL,
+                              FOREIGN KEY(drzava_id) REFERENCES drzava(id),
+                              je_skupina BOOLEAN)", con = conn))
                             
-  
-  
-  dbSendQuery(conn, build_sql("CREATE TABLE drzava (
-                              id SERIAL PRIMARY KEY
-                              ime TEXT
-                              prestolnica TEXT,
-                              prebivalstvo INTEGER)"))
-  
-
-  
   dbSendQuery(conn, build_sql("CREATE TABLE koalicija (
                               id SERIAL PRIMARY KEY, 
                               clani TEXT,
                               umrli INTEGER,
-                              sodelovanje_vojna TEXT REFERENCES vojna(id) FOREIGN KEY)"))
+                              sodelovanje_vojna INTEGER NOT NULL, 
+                              FOREIGN KEY(sodelovanje_vojna) REFERENCES vojna(id) )", con = conn))
   
   dbSendQuery(conn, build_sql("CREATE TABLE sodelovanje_koal (
                               sodelujoci_id INTEGER NOT NULL,
@@ -56,29 +52,29 @@ tryCatch({
                               zacetek DATE,
                               konec DATE,
                               umrli INTEGER,
-                              FOREIGN KEY (sodelujoci_id) REFERENCES sodelujoci(id)
-                              FOREIGN KEY (koalicija_id) REFERENCES koalicija(id))"))
+                              FOREIGN KEY (sodelujoci_id) REFERENCES sodelujoci(id),
+                              FOREIGN KEY (koalicija_id) REFERENCES koalicija(id))", con = conn))
 
   dbSendQuery(conn, build_sql("CREATE TABLE povzroci (
-                              povzrocitelj_id REFERENCES vojna(id),
-                              povzrocena_id REFERENCES vojna(id),
+                              povzrocitelj_id INTEGER NOT NULL,
+                              povzrocena_id INTEGER NOT NULL,
                               FOREIGN KEY(povzrocena_id)  REFERENCES vojna(id),
-                              FOREIGN KEY(povzrocitelj_id) REFERENCES vojna(id))"))
+                              FOREIGN KEY(povzrocitelj_id) REFERENCES vojna(id))", con = conn))
   
   
   dbSendQuery(conn, build_sql("CREATE TABLE uporabnik (
                               id SERIAL PRIMARY KEY,
                               username TEXT NOT NULL,
-                              hash TEXT NOT NUll)"))
+                              hash TEXT NOT NUll)", con = conn))
   
   dbSendQuery(conn, build_sql("CREATE TABLE komentar (
                               id SERIAL PRIMARY KEY,
                               uporabnik_id INTEGER,
-                              vojna_id INTEGER
+                              vojna_id INTEGER,
                               besedilo TEXT,
-                              cas NOW(),
+                              cas TIMESTAMP,
                               FOREIGN KEY(uporabnik_id) REFERENCES uporabnik(id),
-                              FOREIGN KEY(vojna_id) REFERENCES vojna(id))"))
+                              FOREIGN KEY(vojna_id) REFERENCES vojna(id))", con = conn))
   
   
 
