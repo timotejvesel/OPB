@@ -77,7 +77,6 @@ tryCatch({
                               FOREIGN KEY(vojna_id) REFERENCES vojna(id))", con = conn))
   
   
-
   # Rezultat dobimo kot razpredelnico (data frame)
   }, finally = {
     # Na koncu nujno prekinemo povezavo z bazo,
