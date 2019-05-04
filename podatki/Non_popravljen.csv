@@ -1,6 +1,6 @@
 WarNum;WarName;WarType;WhereFought;ccode;SideA1;Side;SideB1;StartYear;StartMonth;StartDay;EndYear;EndMonth;EndDay;Initiator;TransFrom;TransTo;Outcome;SideADeaths;SideBDeaths
 1500;First Maori Tribal War;8;9;;Taranaki;2;Taranaki;1818;-9;-9;1824;-9;-9;2;-8;-8;1;6000;6000
-1500;First Maori Tribal War;8;9;;Te Rauparaha's Ngati Toa;1;Taranaki;1818;-9;-9;1824;-9;-9;2;-8;-8;1;1500;6000
+1500;First Maori Tribal War;8;9;;Te Rauparaha Ngati Toa;1;Taranaki;1818;-9;-9;1824;-9;-9;2;-8;-8;1;1500;6000
 1501;Shaka Zulu-Bantu War;8;4;;Bantu;2;Bantu;1819;-9;-9;1828;9;24;2;-8;-8;1;40000;40000
 1501;Shaka Zulu-Bantu War;8;4;;Shaka Zulu;1;Bantu;1819;-9;-9;1828;9;24;2;-8;-8;1;20000;40000
 1502;Burma-Assam War;8;7;;Assam;2;Assam;1819;-9;-9;1822;-9;-9;2;-8;-8;1;-9;-9
@@ -8,7 +8,7 @@ WarNum;WarName;WarType;WhereFought;ccode;SideA1;Side;SideB1;StartYear;StartMonth
 1503;Buenos Aires War;8;1;;Provinces;2;Provinces;1820;1;8;1820;2;23;2;-8;-8;2;-9;-9
 1503;Buenos Aires War;8;1;;Buenos Aires;1;Provinces;1820;1;8;1820;2;23;2;-8;-8;2;-9;-9
 1505;Second Maori Tribal War;8;9;;Ngati Paoa;2;Ngati Paoa;1821;9;-9;1823;-9;-9;2;-8;-8;1;2000;2000
-1505;Second Maori Tribal War;8;9;;Hongi Hika's Nga Phuhi;1;Ngati Paoa;1821;9;-9;1823;-9;-9;2;-8;-8;1;500;2000
+1505;Second Maori Tribal War;8;9;;Hongi Hika Nga Phuhi;1;Ngati Paoa;1821;9;-9;1823;-9;-9;2;-8;-8;1;500;2000
 1506;Siam-Kedah War;8;7;;Kedah;2;Kedah;1821;11;-9;1821;12;-9;2;-8;-8;1;-9;-9
 1506;Siam-Kedah War;8;7;;Thailand;1;Kedah;1821;11;-9;1821;12;-9;2;-8;-8;1;-9;-9
 1508;China-Kashgaria War;8;7;;Muslim rebels;2;Muslim rebels;1825;-9;-9;1828;-9;-9;2;-8;-8;1;-9;-9
@@ -54,7 +54,7 @@ WarNum;WarName;WarType;WhereFought;ccode;SideA1;Side;SideB1;StartYear;StartMonth
 1534;Taiping Rebellion Phase 1;8;7;710;China;2;China;1850;12;1;1860;10;24;2;-8;567;4;-9;-9
 1534;Taiping Rebellion Phase 1;8;7;;Taiping rebels;1;China;1850;12;1;1860;10;24;2;-8;567;4;-9;-9
 1535;First Tukulor War;8;4;;Malinke;2;Malinke;1852;-9;-9;1854;-9;-9;2;-8;-8;1;6000;6000
-1535;First Tukulor War;8;4;;al-Hajj Umar's Tukulor army;1;Malinke;1852;-9;-9;1854;-9;-9;2;-8;-8;1;4000;6000
+1535;First Tukulor War;8;4;;al-Hajj Umar Tukulor army;1;Malinke;1852;-9;-9;1854;-9;-9;2;-8;-8;1;4000;6000
 1536;Kashmir-Dards of Chilas War;8;7;;Dards;2;Dards;1852;-9;-9;1852;-9;-9;2;-8;-8;2;400;400
 1536;Kashmir-Dards of Chilas War;8;7;;Kashmir;1;Dards;1852;-9;-9;1852;-9;-9;2;-8;-8;2;1600;400
 1537;Han-Miao War Phase 1;8;7;;Miao;2;Miao;1854;3;25;1860;10;24;2;-8;570;4;-9;-9
