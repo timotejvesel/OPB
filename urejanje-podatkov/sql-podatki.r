@@ -6,7 +6,7 @@ source("auth.R")
 
 drv <- dbDriver("PostgreSQL")
 
-
+### vojna
 vstavljanje.vojna <- function(){
   tryCatch({
     conn <- dbConnect(drv, dbname = db, host = host,
@@ -28,4 +28,24 @@ vstavljanje.vojna <- function(){
       dbDisconnect(conn)
     })
   }
-vrsta <- vstavljanje.vojna()
+vojna <- vstavljanje.vojna()
+
+### sodelujoci
+vstavljanje.sodelujoci <- function(){
+  tryCatch({
+    conn <- dbConnect(drv, dbname = db, host = host,
+                      user = user, password = password)
+    
+    
+    for (i in 1:nrow(sodelujoci)){
+      v <- sodelujoci[i, ]
+      dbSendQuery(conn, build_sql("INSERT INTO sodelujoci (id,ime)
+                                  VALUES (", v[["id.drzava"]], ",
+                                  ",v[["ime"]], ")", con = conn))
+      
+    }
+  }, finally = {
+    dbDisconnect(conn)
+  })
+}
+sodelujoci <- vstavljanje.sodelujoci()

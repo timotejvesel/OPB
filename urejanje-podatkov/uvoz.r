@@ -278,8 +278,21 @@ non <- uvozi.non()
 
 ### zdruzimo vojne v eno tabelo
 skupna <- rbind(inter,extra,intra,non)
+skupna$drzava <- gsub(".*United States.*", 'United States of America', skupna$drzava)
+skupna$drzava <- gsub(".*Boliva.*", 'Bolivia', skupna$drzava)
 
-### naredimo tabelo za vojno
+
+drzava <- skupna$drzava
+st <- unique(data.frame(drzava))
+st$drzava.id <- seq.int(nrow(st))
+st$drzava <- as.character(st$drzava)
+
+skupna$id.drzava <- NULL
+
+skupna <- right_join(skupna, st, by = "drzava")
+
+
+### tabela vojna
 # za zacetek in konec vojne vzamemo min oz. max datuma zacetka oz. konca
 vojna <- unique(skupna[,c("id.vojna","ime","datum.zacetek","datum.konec", "izid","obmocje")])
 vojna1 <- vojna %>% group_by(id.vojna,ime,izid) %>% summarise(datum.zacetek = min(datum.zacetek)) %>% ungroup()
@@ -304,4 +317,12 @@ for (i in 1:nrow(vojna4)) {
 }
 vojna <- vojna4
 vojna <- vojna[c("id.vojna","ime","datum.zacetek","datum.konec","izid","obmocje")]
+
+
+#### tabela sodelujoci
+
+sodelujoci <- data.frame(skupna$drzava.id,skupna$drzava)
+sodelujoci <- unique(sodelujoci)
+colnames(sodelujoci) <- c("id.drzava", "ime")
+sodelujoci$ime <- as.character(sodelujoci$ime)
 

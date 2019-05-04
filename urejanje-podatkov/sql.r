@@ -1,4 +1,4 @@
-
+  
 # Neposredno klicanje SQL ukazov v R
 library(dplyr)
 library(dbplyr)
@@ -24,20 +24,24 @@ tryCatch({
                               konec DATE,
                               zmagovalec INTEGER,
                               obmocje TEXT)", con = conn)) # zmagovalec..... zacasni tip: INTEGER
+  # 
+  # dbSendQuery(conn, build_sql("CREATE TABLE drzava (
+  #                             id SERIAL PRIMARY KEY,
+  #                             ime TEXT,
+  #                             prestolnica TEXT,
+  #                             prebivalstvo INTEGER)", con = conn))
+  # 
+  # dbSendQuery(conn, build_sql(" CREATE TABLE sodelujoci (
+  #                             id SERIAL PRIMARY KEY,
+  #                             ime TEXT,
+  #                             cas_obstoja TEXT,
+  #                             drzava_id INTEGER NOT NULL,
+  #                             FOREIGN KEY(drzava_id) REFERENCES drzava(id),
+  #                             je_skupina BOOLEAN)", con = conn))
   
-  dbSendQuery(conn, build_sql("CREATE TABLE drzava (
-                              id SERIAL PRIMARY KEY,
-                              ime TEXT,
-                              prestolnica TEXT,
-                              prebivalstvo INTEGER)", con = conn))
-  
-  dbSendQuery(conn, build_sql(" CREATE TABLE sodelujoci (
-                              id SERIAL PRIMARY KEY,
-                              ime TEXT,
-                              cas_obstoja TEXT,
-                              drzava_id INTEGER NOT NULL,
-                              FOREIGN KEY(drzava_id) REFERENCES drzava(id),
-                              je_skupina BOOLEAN)", con = conn))
+  dbSendQuery(conn, build_sql("CREATE TABLE sodelujoci (
+                               id INTEGER PRIMARY KEY,
+                               ime TEXT)", con = conn))
                             
   dbSendQuery(conn, build_sql("CREATE TABLE koalicija (
                               id SERIAL PRIMARY KEY, 
