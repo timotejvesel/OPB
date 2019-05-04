@@ -94,7 +94,7 @@ vojna <- vojna4
 
 
 uvozi.intra <- function() {
-  intra <- read_csv2("podatki/Intra_popravljen.csv",
+  intra <- read_csv2("Viri/Intra_popravljen.csv",
                     na = ":", locale = locale(encoding="UTF-8"))[,c(1:5,7:12,19:24)]
   
   colnames(inter) <- c("id.vojna", "ime", "tip", "id.drzava", "drzava", "stran", "mesec.zacetek",
@@ -108,4 +108,5 @@ uvozi.intra <- function() {
 }
 
 
-inter <- uvozi.inter()
+intra <- uvozi.intra()
+
