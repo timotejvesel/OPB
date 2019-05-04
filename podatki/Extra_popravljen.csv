@@ -225,7 +225,7 @@ WarNum;WarName;WarType;ccode;Udelezen;Side;StartMonth1;StartDay1;StartYear1;EndM
 416;Second Boer War;3;200;United Kingdom;1;10;11;1899;5;31;1902;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;4;22000;8800;4
 417;Last Ashanti War;3;;Ashanti;2;4;2;1900;9;30;1900;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;4;1000;1000;4
 417;Last Ashanti War;3;200;United Kingdom;1;4;2;1900;9;30;1900;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;4;1000;1000;4
-419;Somali Rebellion;2;;Mohammad Abdullah Hassan’s Dervishes;2;3;22;1901;4;21;1904;-8;-8;-8;-8;-8;-8;0;1;-8;1;-8;4;4000;4000;4
+419;Somali Rebellion;2;;Mohammad Abdullah HassanÂ’s Dervishes;2;3;22;1901;4;21;1904;-8;-8;-8;-8;-8;-8;0;1;-8;1;-8;4;4000;4000;4
 419;Somali Rebellion;2;200;United Kingdom;1;3;22;1901;4;21;1904;-8;-8;-8;-8;-8;-8;0;1;-8;1;-8;4;400;4000;4
 419;Somali Rebellion;2;530;Ethiopia;2;3;22;1901;4;21;1904;-8;-8;-8;-8;-8;-8;0;1;-8;1;-8;4;-9;-8;4
 420;Bailundu Revolt;3;;Bailundu of Angola;2;-9;-9;1902;-9;-9;1903;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;4;-9;-9;4
@@ -276,7 +276,7 @@ WarNum;WarName;WarType;ccode;Udelezen;Side;StartMonth1;StartDay1;StartYear1;EndM
 445;Iraqi-British;2;645;Iraq;2;6;5;1920;10;17;1920;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;6;8500;8500;4
 445;Iraqi-British;2;200;United Kingdom;1;6;5;1920;10;17;1920;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;6;1040;8500;4
 446;Conquest of Mongolia;3;365;USSR;1;5;28;1921;8;22;1921;-8;-8;-8;-8;-8;-8;0;1;-8;1;-8;7;-9;-8;4
-446;Conquest of Mongolia;3;;Baron von Ungern-Sternberg’s White army;2;10;10;1920;8;22;1921;-8;-8;-8;-8;-8;-8;0;1;-8;1;-8;7;1000;1000;4
+446;Conquest of Mongolia;3;;Baron von Ungern-Sternberg White army;2;10;10;1920;8;22;1921;-8;-8;-8;-8;-8;-8;0;1;-8;1;-8;7;1000;1000;4
 446;Conquest of Mongolia;3;710;China;1;10;10;1920;8;22;1921;-8;-8;-8;-8;-8;-8;0;1;-8;1;-8;7;4000;1000;4
 447;Italian-Sanusi;2;325;Italy;2;3;23;1923;9;12;1931;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;6;5000;35000;4
 447;Italian-Sanusi;2;;Sanusi tribe;1;3;23;1923;9;12;1931;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;6;35000;35000;4
@@ -289,8 +289,8 @@ WarNum;WarName;WarType;ccode;Udelezen;Side;StartMonth1;StartDay1;StartYear1;EndM
 451;Franco-Druze;2;220;France;1;7;18;1925;5;27;1927;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;6;4000;2000;4
 452;Yen Bai Uprising;2;;Vietnamese Nationalists;2;2;9;1930;-9;-9;1931;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;7;1000;1000;4
 452;Yen Bai Uprising;2;220;France;1;2;9;1930;-9;-9;1931;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;7;1;1000;4
-453;Saya San's Rebellion;2;;Peasant Rebels;2;12;22;1930;6;-9;1932;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;7;1000;1000;4
-453;Saya San's Rebellion;2;200;United Kingdom;1;12;22;1930;6;-9;1932;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;7;140;1000;4
+453;Saya San Rebellion;2;;Peasant Rebels;2;12;22;1930;6;-9;1932;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;7;1000;1000;4
+453;Saya San Rebellion;2;200;United Kingdom;1;12;22;1930;6;-9;1932;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;7;140;1000;4
 454;British-Palestinian;2;;Palestinians;2;4;20;1936;10;-9;1936;8;-9;1937;1;-9;1939;0;0;-8;1;-8;6;2450;2450;4
 454;British-Palestinian;2;200;United Kingdom;1;4;20;1936;10;-9;1936;8;-9;1937;1;-9;1939;0;0;-8;1;-8;6;126;2450;4
 455;Second British-Waziristan;3;;Pathan tribes;2;11;25;1936;1;8;1938;-8;-8;-8;-8;-8;-8;0;0;-8;1;-8;7;10000;10000;4
