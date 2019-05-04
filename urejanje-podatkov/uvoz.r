@@ -94,19 +94,272 @@ vojna <- vojna4
 
 
 uvozi.intra <- function() {
-  intra <- read_csv2("Viri/Intra_popravljen.csv",
-                    na = ":", locale = locale(encoding="UTF-8"))[,c(1:5,7:12,19:24)]
+  intra <- read_csv2("podatki/Intra_popravljen.csv",
+                    na = ":", locale = locale(encoding="UTF-8"))[,c(1:6,8:13,20:25)]
   
-  colnames(inter) <- c("id.vojna", "ime", "tip", "id.drzava", "drzava", "stran", "mesec.zacetek",
+  colnames(intra) <- c("id.vojna", "ime", "tip", "id.drzava", "drzava", "stran", "mesec.zacetek",
                        "dan.zacetek", "leto.zacetek", "mesec.konec",
                        "dan.konec", "leto.konec", "iz",
                        "obmocje","zacetnik", "izid", "v", "zrtve")
   
+  intra$datum.zacetek <- as.Date(with(intra, paste(leto.zacetek, mesec.zacetek, dan.zacetek,sep="-")), "%Y-%m-%d")
+  intra$datum.konec <- as.Date(with(intra, paste(leto.konec, mesec.konec, dan.konec,sep="-")), "%Y-%m-%d")
   
-  return(inter)
+  
+  for (i in 1:length(intra$obmocje)) {
+    if (intra$obmocje[i] == 1) {
+      intra$obmocje[i] <- "Western Hemisphere"
+    }
+    else if (intra$obmocje[i] == 2) {
+      intra$obmocje[i] <- "Europe"
+    }
+    else if (intra$obmocje[i] == 4) {
+      intra$obmocje[i] <- "Africa"
+    }
+    else if (intra$obmocje[i] == 6) {
+      intra$obmocje[i] <- "Middle East"
+    }
+    else if (intra$obmocje[i] == 7) {
+      intra$obmocje[i] <- "Asia"
+    }
+    else if (intra$obmocje[i] == 9) {
+      intra$obmocje[i] <- "Oceania"
+    }
+    else if (intra$obmocje[i] == 11) {
+      intra$obmocje[i] <- "Europe, Middle East"
+    }
+    else if (intra$obmocje[i] == 12) {
+      intra$obmocje[i] <- "Europe, Asia"
+    }
+    else if (intra$obmocje[i] == 13) {
+      intra$obmocje[i] <- "W. Hemisphere, Asia"
+    }
+    else if (intra$obmocje[i] == 14) {
+      intra$obmocje[i] <- "Europe, Africa, Middle East"
+    }
+    else if (intra$obmocje[i] == 15) {
+      intra$obmocje[i] <- "Europe, Africa, Middle East, Asia"
+    }
+    else if (intra$obmocje[i] == 16) {
+      intra$obmocje[i] <- "Africa, Middle East, Asia, Oceania"
+    }
+    else if (intra$obmocje[i] == 17) {
+      intra$obmocje[i] <- "Asia, Oceania"
+    }
+    else if (intra$obmocje[i] == 18) {
+      intra$obmocje[i] <- "Africa, Middle East"
+    }
+    else if  (intra$obmocje[i] == 19) {
+      intra$obmocje[i] <- "Europe, Africa, Middle East, Asia, Oceania"
+    }
+    
+  }
+  return(intra)
   
 }
 
 
 intra <- uvozi.intra()
+
+voj_intra <- unique(intra[,c("id.vojna","ime","datum.zacetek","datum.konec", "izid","obmocje")])
+voj_intra1 <- intra %>% group_by(id.vojna,ime,izid) %>% summarise(datum.zacetek = min(datum.zacetek)) %>% ungroup()
+voj_intra2 <- intra %>% group_by(id.vojna) %>% summarise(datum.konec = max(datum.konec)) %>% ungroup()
+voj_intra3 <- intra %>% group_by(id.vojna) %>% summarise(obmocje = toString(obmocje)) %>% ungroup()
+
+voj_intra4 <- inner_join(voj_intra1,voj_intra2, by = "id.vojna")
+voj_intra4 <- inner_join(voj_intra3,voj_intra4, by = "id.vojna")
+
+for (i in 1:nrow(voj_intra4)) {
+  if (voj_intra4$izid == 8 ) {
+    
+  }
+  voj_intra4$obmocje[i] <- paste(voj_intra4$obmocje[i],",", sep = '')
+  str <- voj_intra4$obmocje[i]
+  d <- unlist(strsplit(str, split=" "))
+  voj_intra4$obmocje[i] <- paste(unique(d), collapse = ' ')
+  # odstrani zadnjo vejico
+  voj_intra4$obmocje[i] <- gsub(",$", "", voj_intra4$obmocje[i])
+}
+voj_intra <- voj_intra4
+
+uvozi.extra <- function() {
+  extra <- read_csv2("podatki/Extra_popravljen.csv",
+                     na = ":", locale = locale(encoding="UTF-8"))[,c(1:12,19,21:25)]
+  
+  colnames(extra) <- c("id.vojna", "ime", "tip", "id.drzava", "drzava", "stran", "mesec.zacetek",
+                       "dan.zacetek", "leto.zacetek", "mesec.konec",
+                       "dan.konec", "leto.konec",
+                       "zacetnik", "iz", "izid", "v","obmocje" ,"zrtve")
+  
+  extra$datum.zacetek <- as.Date(with(extra, paste(leto.zacetek, mesec.zacetek, dan.zacetek,sep="-")), "%Y-%m-%d")
+  extra$datum.konec <- as.Date(with(extra, paste(leto.konec, mesec.konec, dan.konec,sep="-")), "%Y-%m-%d")
+  
+  
+  for (i in 1:length(extra$obmocje)) {
+    if (extra$obmocje[i] == 1) {
+      extra$obmocje[i] <- "Western Hemisphere"
+    }
+    else if (extra$obmocje[i] == 2) {
+      extra$obmocje[i] <- "Europe"
+    }
+    else if (extra$obmocje[i] == 4) {
+      extra$obmocje[i] <- "Africa"
+    }
+    else if (extra$obmocje[i] == 6) {
+      extra$obmocje[i] <- "Middle East"
+    }
+    else if (extra$obmocje[i] == 7) {
+      extra$obmocje[i] <- "Asia"
+    }
+    else if (extra$obmocje[i] == 9) {
+      extra$obmocje[i] <- "Oceania"
+    }
+    else if (extra$obmocje[i] == 11) {
+      extra$obmocje[i] <- "Europe, Middle East"
+    }
+    else if (extra$obmocje[i] == 12) {
+      extra$obmocje[i] <- "Europe, Asia"
+    }
+    else if (extra$obmocje[i] == 13) {
+      extra$obmocje[i] <- "W. Hemisphere, Asia"
+    }
+    else if (extra$obmocje[i] == 14) {
+      extra$obmocje[i] <- "Europe, Africa, Middle East"
+    }
+    else if (extra$obmocje[i] == 15) {
+      extra$obmocje[i] <- "Europe, Africa, Middle East, Asia"
+    }
+    else if (extra$obmocje[i] == 16) {
+      extra$obmocje[i] <- "Africa, Middle East, Asia, Oceania"
+    }
+    else if (extra$obmocje[i] == 17) {
+      extra$obmocje[i] <- "Asia, Oceania"
+    }
+    else if (extra$obmocje[i] == 18) {
+      extra$obmocje[i] <- "Africa, Middle East"
+    }
+    else if  (extra$obmocje[i] == 19) {
+      extra$obmocje[i] <- "Europe, Africa, Middle East, Asia, Oceania"
+    }
+    
+  }
+  return(extra)
+  
+}
+
+
+extra <- uvozi.extra()
+
+voj_extra <- unique(extra[,c("id.vojna","ime","datum.zacetek","datum.konec", "izid","obmocje")])
+voj_extra1 <- extra %>% group_by(id.vojna,ime,izid) %>% summarise(datum.zacetek = min(datum.zacetek)) %>% ungroup()
+voj_extra2 <- extra %>% group_by(id.vojna) %>% summarise(datum.konec = max(datum.konec)) %>% ungroup()
+voj_extra3 <- extra %>% group_by(id.vojna) %>% summarise(obmocje = toString(obmocje)) %>% ungroup()
+
+voj_extra4 <- inner_join(voj_extra1,voj_extra2, by = "id.vojna")
+voj_extra4 <- inner_join(voj_extra3,voj_extra4, by = "id.vojna")
+
+for (i in 1:nrow(voj_extra4)) {
+  if (voj_extra4$izid == 8 ) {
+    
+  }
+  voj_extra4$obmocje[i] <- paste(voj_extra4$obmocje[i],",", sep = '')
+  str <- voj_extra4$obmocje[i]
+  d <- unlist(strsplit(str, split=" "))
+  voj_extra4$obmocje[i] <- paste(unique(d), collapse = ' ')
+  # odstrani zadnjo vejico
+  voj_extra4$obmocje[i] <- gsub(",$", "", voj_extra4$obmocje[i])
+}
+voj_extra <- voj_extra4
+
+uvozi.non <- function() {
+  non <- read_csv2("podatki/Non_popravljen.csv",
+                   na = ":", locale = locale(encoding="UTF-8"))[,c(1:7,9:19)]
+  
+  colnames(non) <- c("id.vojna", "ime", "tip", "obmocje" ,"id.drzava", "drzava", "stran",
+                     "leto.zacetek","mesec.zacetek",
+                     "dan.zacetek", "leto.konec","mesec.konec",
+                     "dan.konec", 
+                     "zacetnik", "iz",  "v","izid","zrtve")
+  
+  non$datum.zacetek <- as.Date(with(non, paste(leto.zacetek, mesec.zacetek, dan.zacetek,sep="-")), "%Y-%m-%d")
+  non$datum.konec <- as.Date(with(non, paste(leto.konec, mesec.konec, dan.konec,sep="-")), "%Y-%m-%d")
+  
+  
+  for (i in 1:length(non$obmocje)) {
+    if (non$obmocje[i] == 1) {
+      non$obmocje[i] <- "Western Hemisphere"
+    }
+    else if (non$obmocje[i] == 2) {
+      non$obmocje[i] <- "Europe"
+    }
+    else if (non$obmocje[i] == 4) {
+      non$obmocje[i] <- "Africa"
+    }
+    else if (non$obmocje[i] == 6) {
+      non$obmocje[i] <- "Middle East"
+    }
+    else if (non$obmocje[i] == 7) {
+      non$obmocje[i] <- "Asia"
+    }
+    else if (non$obmocje[i] == 9) {
+      non$obmocje[i] <- "Oceania"
+    }
+    else if (non$obmocje[i] == 11) {
+      non$obmocje[i] <- "Europe, Middle East"
+    }
+    else if (non$obmocje[i] == 12) {
+      non$obmocje[i] <- "Europe, Asia"
+    }
+    else if (non$obmocje[i] == 13) {
+      non$obmocje[i] <- "W. Hemisphere, Asia"
+    }
+    else if (non$obmocje[i] == 14) {
+      non$obmocje[i] <- "Europe, Africa, Middle East"
+    }
+    else if (non$obmocje[i] == 15) {
+      non$obmocje[i] <- "Europe, Africa, Middle East, Asia"
+    }
+    else if (non$obmocje[i] == 16) {
+      non$obmocje[i] <- "Africa, Middle East, Asia, Oceania"
+    }
+    else if (non$obmocje[i] == 17) {
+      non$obmocje[i] <- "Asia, Oceania"
+    }
+    else if (non$obmocje[i] == 18) {
+      non$obmocje[i] <- "Africa, Middle East"
+    }
+    else if  (non$obmocje[i] == 19) {
+      non$obmocje[i] <- "Europe, Africa, Middle East, Asia, Oceania"
+    }
+    
+  }
+  return(non)
+  
+}
+
+
+non <- uvozi.non()
+
+voj_non <- unique(non[,c("id.vojna","ime","datum.zacetek","datum.konec", "izid","obmocje")])
+voj_non1 <- non %>% group_by(id.vojna,ime,izid) %>% summarise(datum.zacetek = min(datum.zacetek)) %>% ungroup()
+voj_non2 <- non %>% group_by(id.vojna) %>% summarise(datum.konec = max(datum.konec)) %>% ungroup()
+voj_non3 <- non %>% group_by(id.vojna) %>% summarise(obmocje = toString(obmocje)) %>% ungroup()
+
+voj_non4 <- inner_join(voj_non1,voj_non2, by = "id.vojna")
+voj_non4 <- inner_join(voj_non3,voj_non4, by = "id.vojna")
+
+for (i in 1:nrow(voj_non4)) {
+  if (voj_non4$izid == 8 ) {
+    
+  }
+  voj_non4$obmocje[i] <- paste(voj_non4$obmocje[i],",", sep = '')
+  str <- voj_non4$obmocje[i]
+  d <- unlist(strsplit(str, split=" "))
+  voj_non4$obmocje[i] <- paste(unique(d), collapse = ' ')
+  # odstrani zadnjo vejico
+  voj_non4$obmocje[i] <- gsub(",$", "", voj_non4$obmocje[i])
+}
+voj_non <- voj_non4
+
+vse_vojne <- rbind(voj_non,voj_extra,voj_intra,vojna)
 
