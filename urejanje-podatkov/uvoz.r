@@ -1,5 +1,6 @@
+##### Uvoz inter
 uvozi.inter <- function() {
-  inter <- read_csv2("Viri/Inter_popravljen.csv",
+  inter <- read_csv2("podatki/Inter_popravljen.csv",
                          na = ":", locale = locale(encoding="UTF-8"))[,c(1:12,19:24)]
   
   colnames(inter) <- c("id.vojna", "ime", "tip", "id.drzava", "drzava", "stran", "mesec.zacetek",
@@ -66,36 +67,12 @@ uvozi.inter <- function() {
 
 inter <- uvozi.inter()
 
-# za zacetek in konec vojne vzamemo min oz. max datuma zacetka oz. konca
-vojna <- unique(inter[,c("id.vojna","ime","datum.zacetek","datum.konec", "izid","obmocje")])
-vojna1 <- vojna %>% group_by(id.vojna,ime,izid) %>% summarise(datum.zacetek = min(datum.zacetek)) %>% ungroup()
-vojna2 <- vojna %>% group_by(id.vojna) %>% summarise(datum.konec = max(datum.konec)) %>% ungroup()
-vojna3 <- vojna %>% group_by(id.vojna) %>% summarise(obmocje = toString(obmocje)) %>% ungroup()
-
-vojna4 <- inner_join(vojna1,vojna2, by = "id.vojna")
-vojna4 <- inner_join(vojna3,vojna4, by = "id.vojna")
 
 
-# odstrani ponavljajoca se obmocja v posamezni vojni
-for (i in 1:nrow(vojna4)) {
-  if (vojna4$izid == 8 ) {
-    
-  }
-  vojna4$obmocje[i] <- paste(vojna4$obmocje[i],",", sep = '')
-  str <- vojna4$obmocje[i]
-  d <- unlist(strsplit(str, split=" "))
-  vojna4$obmocje[i] <- paste(unique(d), collapse = ' ')
-  # odstrani zadnjo vejico
-  vojna4$obmocje[i] <- gsub(",$", "", vojna4$obmocje[i])
-}
-vojna <- vojna4
-
-
-
-
+##### Uvoz intra
 uvozi.intra <- function() {
   intra <- read_csv2("podatki/Intra_popravljen.csv",
-                    na = ":", locale = locale(encoding="UTF-8"))[,c(1:6,8:13,20:25)]
+                     na = ":", locale = locale(encoding="UTF-8"))[,c(1:6,8:13,20:25)]
   
   colnames(intra) <- c("id.vojna", "ime", "tip", "id.drzava", "drzava", "stran", "mesec.zacetek",
                        "dan.zacetek", "leto.zacetek", "mesec.konec",
@@ -158,30 +135,9 @@ uvozi.intra <- function() {
   
 }
 
-
 intra <- uvozi.intra()
 
-voj_intra <- unique(intra[,c("id.vojna","ime","datum.zacetek","datum.konec", "izid","obmocje")])
-voj_intra1 <- intra %>% group_by(id.vojna,ime,izid) %>% summarise(datum.zacetek = min(datum.zacetek)) %>% ungroup()
-voj_intra2 <- intra %>% group_by(id.vojna) %>% summarise(datum.konec = max(datum.konec)) %>% ungroup()
-voj_intra3 <- intra %>% group_by(id.vojna) %>% summarise(obmocje = toString(obmocje)) %>% ungroup()
-
-voj_intra4 <- inner_join(voj_intra1,voj_intra2, by = "id.vojna")
-voj_intra4 <- inner_join(voj_intra3,voj_intra4, by = "id.vojna")
-
-for (i in 1:nrow(voj_intra4)) {
-  if (voj_intra4$izid == 8 ) {
-    
-  }
-  voj_intra4$obmocje[i] <- paste(voj_intra4$obmocje[i],",", sep = '')
-  str <- voj_intra4$obmocje[i]
-  d <- unlist(strsplit(str, split=" "))
-  voj_intra4$obmocje[i] <- paste(unique(d), collapse = ' ')
-  # odstrani zadnjo vejico
-  voj_intra4$obmocje[i] <- gsub(",$", "", voj_intra4$obmocje[i])
-}
-voj_intra <- voj_intra4
-
+##### Uvoz extra
 uvozi.extra <- function() {
   extra <- read_csv2("podatki/Extra_popravljen.csv",
                      na = ":", locale = locale(encoding="UTF-8"))[,c(1:12,19,21:25)]
@@ -247,30 +203,10 @@ uvozi.extra <- function() {
   
 }
 
-
 extra <- uvozi.extra()
 
-voj_extra <- unique(extra[,c("id.vojna","ime","datum.zacetek","datum.konec", "izid","obmocje")])
-voj_extra1 <- extra %>% group_by(id.vojna,ime,izid) %>% summarise(datum.zacetek = min(datum.zacetek)) %>% ungroup()
-voj_extra2 <- extra %>% group_by(id.vojna) %>% summarise(datum.konec = max(datum.konec)) %>% ungroup()
-voj_extra3 <- extra %>% group_by(id.vojna) %>% summarise(obmocje = toString(obmocje)) %>% ungroup()
 
-voj_extra4 <- inner_join(voj_extra1,voj_extra2, by = "id.vojna")
-voj_extra4 <- inner_join(voj_extra3,voj_extra4, by = "id.vojna")
-
-for (i in 1:nrow(voj_extra4)) {
-  if (voj_extra4$izid == 8 ) {
-    
-  }
-  voj_extra4$obmocje[i] <- paste(voj_extra4$obmocje[i],",", sep = '')
-  str <- voj_extra4$obmocje[i]
-  d <- unlist(strsplit(str, split=" "))
-  voj_extra4$obmocje[i] <- paste(unique(d), collapse = ' ')
-  # odstrani zadnjo vejico
-  voj_extra4$obmocje[i] <- gsub(",$", "", voj_extra4$obmocje[i])
-}
-voj_extra <- voj_extra4
-
+##### Uvoz non
 uvozi.non <- function() {
   non <- read_csv2("podatki/Non_popravljen.csv",
                    na = ":", locale = locale(encoding="UTF-8"))[,c(1:7,9:19)]
@@ -337,29 +273,35 @@ uvozi.non <- function() {
   
 }
 
-
 non <- uvozi.non()
 
-voj_non <- unique(non[,c("id.vojna","ime","datum.zacetek","datum.konec", "izid","obmocje")])
-voj_non1 <- non %>% group_by(id.vojna,ime,izid) %>% summarise(datum.zacetek = min(datum.zacetek)) %>% ungroup()
-voj_non2 <- non %>% group_by(id.vojna) %>% summarise(datum.konec = max(datum.konec)) %>% ungroup()
-voj_non3 <- non %>% group_by(id.vojna) %>% summarise(obmocje = toString(obmocje)) %>% ungroup()
 
-voj_non4 <- inner_join(voj_non1,voj_non2, by = "id.vojna")
-voj_non4 <- inner_join(voj_non3,voj_non4, by = "id.vojna")
+### zdruzimo vojne v eno tabelo
+skupna <- rbind(inter,extra,intra,non)
 
-for (i in 1:nrow(voj_non4)) {
-  if (voj_non4$izid == 8 ) {
+### naredimo tabelo za vojno
+# za zacetek in konec vojne vzamemo min oz. max datuma zacetka oz. konca
+vojna <- unique(skupna[,c("id.vojna","ime","datum.zacetek","datum.konec", "izid","obmocje")])
+vojna1 <- vojna %>% group_by(id.vojna,ime,izid) %>% summarise(datum.zacetek = min(datum.zacetek)) %>% ungroup()
+vojna2 <- vojna %>% group_by(id.vojna) %>% summarise(datum.konec = max(datum.konec)) %>% ungroup()
+vojna3 <- vojna %>% group_by(id.vojna) %>% summarise(obmocje = toString(obmocje)) %>% ungroup()
+
+vojna4 <- inner_join(vojna1,vojna2, by = "id.vojna")
+vojna4 <- inner_join(vojna3,vojna4, by = "id.vojna")
+
+
+# odstrani ponavljajoca se obmocja v posamezni vojni
+for (i in 1:nrow(vojna4)) {
+  if (vojna4$izid == 8 ) {
     
   }
-  voj_non4$obmocje[i] <- paste(voj_non4$obmocje[i],",", sep = '')
-  str <- voj_non4$obmocje[i]
+  vojna4$obmocje[i] <- paste(vojna4$obmocje[i],",", sep = '')
+  str <- vojna4$obmocje[i]
   d <- unlist(strsplit(str, split=" "))
-  voj_non4$obmocje[i] <- paste(unique(d), collapse = ' ')
+  vojna4$obmocje[i] <- paste(unique(d), collapse = ' ')
   # odstrani zadnjo vejico
-  voj_non4$obmocje[i] <- gsub(",$", "", voj_non4$obmocje[i])
+  vojna4$obmocje[i] <- gsub(",$", "", vojna4$obmocje[i])
 }
-voj_non <- voj_non4
-
-vse_vojne <- rbind(voj_non,voj_extra,voj_intra,vojna)
+vojna <- vojna4
+vojna <- vojna[c("id.vojna","ime","datum.zacetek","datum.konec","izid","obmocje")]
 

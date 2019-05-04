@@ -2,7 +2,7 @@ library(dplyr)
 library(dbplyr)
 library(RPostgreSQL)
 
-source("urejanje-podatkov/auth.R")
+source("auth.R")
 
 drv <- dbDriver("PostgreSQL")
 
@@ -13,8 +13,8 @@ vstavljanje.vojna <- function(){
                       user = user, password = password)
     
     
-    for (i in 1:nrow(vse_vojne)){
-      v <- vse_vojne[i, ]
+    for (i in 1:nrow(vojna)){
+      v <- vojna[i, ]
       dbSendQuery(conn, build_sql("INSERT INTO vojna (id,ime,zacetek,konec,zmagovalec,obmocje)
                                   VALUES (", v[["id.vojna"]], ",
                                   ",v[["ime"]], ", 
