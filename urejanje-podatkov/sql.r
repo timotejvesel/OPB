@@ -46,6 +46,7 @@ tryCatch({
   dbSendQuery(conn, build_sql("CREATE TABLE koalicija (
                               id SERIAL PRIMARY KEY, 
                               clani TEXT,
+                              stran INTEGER,
                               umrli INTEGER,
                               sodelovanje_vojna INTEGER NOT NULL, 
                               FOREIGN KEY(sodelovanje_vojna) REFERENCES vojna(id) )", con = conn))
