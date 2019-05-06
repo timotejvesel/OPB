@@ -326,5 +326,33 @@ sodelujoci <- unique(sodelujoci)
 colnames(sodelujoci) <- c("id.drzava", "ime")
 sodelujoci$ime <- as.character(sodelujoci$ime)
 
-###tabela koalicija
-koalicija <- data.frame()
+
+### tabela koalicija
+
+# neznano stevilo zrtec (-9) zamenjamo z NA
+library(naniar)
+skupna <- skupna %>% replace_with_na(replace = list(zrtve = c(-8,-9)))
+
+koalicija <- data.frame(stran = integer(),id.vojna = integer(),
+                        clani = character(), zrtve = integer(), 
+                        stringsAsFactors=FALSE)
+
+for(i in 1:max(skupna$id.vojna)){
+  posamezna <- skupna[skupna$id.vojna == i,]
+  posamezna <- posamezna %>% 
+    group_by(stran) %>%
+    summarise(id.vojna = i,
+              clani = paste(drzava, collapse = ", "),
+              zrtve = sum(zrtve))
+  koalicija <- rbind(koalicija,posamezna)
+}
+
+
+id.koalicija <- seq.int(nrow(koalicija))
+koalicija$id.koalicija <- id.koalicija
+
+### tabela sodelovanje koalicija
+skupna.z <- skupna[,c("id.vojna", "stran", "datum.zacetek", "datum.konec", "zrtve", "drzava.id")]
+koalicija.z <- koalicija[,c("stran", "id.vojna", "id.koalicija" )]
+
+sodelovanje <- right_join(skupna.z, koalicija.z, by = c("stran","id.vojna"))

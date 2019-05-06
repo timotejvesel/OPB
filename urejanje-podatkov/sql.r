@@ -1,12 +1,11 @@
-  
 # Neposredno klicanje SQL ukazov v R
 library(dplyr)
 library(dbplyr)
 library(RPostgreSQL)
 
-source("urejanje-podatkov/auth.R")
+source("auth.R")
 
-# Pove≈æemo se z gonilnikom za PostgreSQL
+# Poveûemo se z gonilnikom za PostgreSQL
 drv <- dbDriver("PostgreSQL")
 conn <- dbConnect(drv, dbname = db, host = host,
                   user = user, password = password)
@@ -17,7 +16,7 @@ conn <- dbConnect(drv, dbname = db, host = host,
 tryCatch({
   # Vzpostavimo povezavo
   
- dbSendQuery(conn, build_sql("CREATE TABLE vojna (
+  dbSendQuery(conn, build_sql("CREATE TABLE vojna (
                               id INTEGER PRIMARY KEY,
                               ime TEXT NOT NULL,
                               zacetek DATE,
@@ -40,15 +39,17 @@ tryCatch({
   #                             je_skupina BOOLEAN)", con = conn))
   
   dbSendQuery(conn, build_sql("CREATE TABLE sodelujoci (
-                               id INTEGER PRIMARY KEY,
-                               ime TEXT)", con = conn))
-                            
+                              id INTEGER PRIMARY KEY,
+                              ime TEXT)", con = conn))
+  
   dbSendQuery(conn, build_sql("CREATE TABLE koalicija (
-                              id SERIAL PRIMARY KEY, 
+                              id INTEGER PRIMARY KEY, 
                               clani TEXT,
+                              stran INTEGER,
                               umrli INTEGER,
                               sodelovanje_vojna INTEGER NOT NULL, 
                               FOREIGN KEY(sodelovanje_vojna) REFERENCES vojna(id) )", con = conn))
+  
   
   dbSendQuery(conn, build_sql("CREATE TABLE sodelovanje_koal (
                               sodelujoci_id INTEGER NOT NULL,
@@ -58,7 +59,7 @@ tryCatch({
                               umrli INTEGER,
                               FOREIGN KEY (sodelujoci_id) REFERENCES sodelujoci(id),
                               FOREIGN KEY (koalicija_id) REFERENCES koalicija(id))", con = conn))
-
+  
   dbSendQuery(conn, build_sql("CREATE TABLE povzroci (
                               povzrocitelj_id INTEGER NOT NULL,
                               povzrocena_id INTEGER NOT NULL,
@@ -82,15 +83,11 @@ tryCatch({
   
   
   # Rezultat dobimo kot razpredelnico (data frame)
-  }, finally = {
-    # Na koncu nujno prekinemo povezavo z bazo,
-    # saj preveƒç odprtih povezav ne smemo imeti
-    dbDisconnect(conn)
-    # Koda v finally bloku se izvede v vsakem primeru
-    # - bodisi ob koncu izvajanja try bloka,
-    # ali pa po tem, ko se ta konƒça z napako
-  })
-
-                          
-
-
+}, finally = {
+  # Na koncu nujno prekinemo povezavo z bazo,
+  # saj preveË odprtih povezav ne smemo imeti
+  dbDisconnect(conn)
+  # Koda v finally bloku se izvede v vsakem primeru
+  # - bodisi ob koncu izvajanja try bloka,
+  # ali pa po tem, ko se ta konËa z napako
+})
