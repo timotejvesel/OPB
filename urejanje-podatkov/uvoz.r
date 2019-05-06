@@ -326,3 +326,5 @@ sodelujoci <- unique(sodelujoci)
 colnames(sodelujoci) <- c("id.drzava", "ime")
 sodelujoci$ime <- as.character(sodelujoci$ime)
 
+###tabela koalicija
+koalicija <- data.frame()

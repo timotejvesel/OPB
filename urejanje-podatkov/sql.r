@@ -4,7 +4,7 @@ library(dplyr)
 library(dbplyr)
 library(RPostgreSQL)
 
-source("auth.R")
+source("urejanje-podatkov/auth.R")
 
 # Povežemo se z gonilnikom za PostgreSQL
 drv <- dbDriver("PostgreSQL")
