@@ -346,3 +346,13 @@ for(i in 1:max(skupna$id.vojna)){
               zrtve = sum(zrtve))
   koalicija <- rbind(koalicija,posamezna)
 }
+
+
+id.koalicija <- seq.int(nrow(koalicija))
+koalicija$id.koalicija <- id.koalicija
+
+### tabela sodelovanje koalicija
+skupna.z <- skupna[,c("id.vojna", "stran", "datum.zacetek", "datum.konec", "zrtve", "drzava.id")]
+koalicija.z <- koalicija[,c("stran", "id.vojna", "id.koalicija" )]
+
+sodelovanje <- right_join(skupna.z, koalicija.z, by = c("stran","id.vojna"))

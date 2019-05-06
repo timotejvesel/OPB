@@ -60,8 +60,9 @@ vstavljanje.koalicija  <- function(){
     
     for (i in 1:nrow(koalicija)){
       v <- koalicija[i, ]
-      dbSendQuery(conn, build_sql("INSERT INTO koalicija (clani, stran, umrli, sodelovanje_vojna)
-                                  VALUES (", v[["clani"]], ",
+      dbSendQuery(conn, build_sql("INSERT INTO koalicija (id, clani, stran, umrli, sodelovanje_vojna)
+                                  VALUES (",  v[["id.koalicija"]], ",
+                                  ",v[["clani"]], ",
                                   ",v[["stran"]], ", 
                                   ",v[["zrtve"]], ",
                                   ",v[["id.vojna"]], ")", con = conn))
@@ -72,3 +73,27 @@ vstavljanje.koalicija  <- function(){
   })
 }
 koalicija <- vstavljanje.koalicija()
+
+
+### sodelovanje koalicija
+vstavljanje.sodelovanje  <- function(){
+  tryCatch({
+    conn <- dbConnect(drv, dbname = db, host = host,
+                      user = user, password = password)
+    
+    
+    for (i in 1:nrow(sodelovanje)){
+      v <- sodelovanje[i, ]
+      dbSendQuery(conn, build_sql("INSERT INTO sodelovanje_koal (sodelujoci_id, koalicija_id, zacetek, konec, umrli)
+                                  VALUES (",  v[["drzava.id"]], ",
+                                  ",v[["id.koalicija"]], ",
+                                  ",v[["datum.zacetek"]], ", 
+                                  ",v[["datum.konec"]], ",
+                                  ",v[["zrtve"]], ")", con = conn))
+      
+    }
+  }, finally = {
+    dbDisconnect(conn)
+  })
+  }
+sodelovanje <- vstavljanje.sodelovanje()
