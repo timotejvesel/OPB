@@ -113,6 +113,6 @@ vstavljanje.povzroci <- function(){
     dbDisconnect(conn)
   })
   }
-povzroci <- vstavljanje.sodelovanje()
+povzroci <- vstavljanje.povzroci()
 
     
