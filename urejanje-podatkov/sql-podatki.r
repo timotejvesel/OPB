@@ -98,21 +98,23 @@ vstavljanje.sodelovanje  <- function(){
   }
 sodelovanje <- vstavljanje.sodelovanje()
 
+
+### povzroci/je povzrocena
 vstavljanje.povzroci <- function(){
   tryCatch({
     conn <- dbConnect(drv, dbname = db, host = host,
                       user = user, password = password)
     for (i in 1:nrow(povzroci)){
-      v <- sodelovanje[i, ]
-      dbSendQuery(conn, build_sql("INSERT INTO povzroci (id.vojna, id.koalicija)
+      v <- povzroci[i, ]
+      dbSendQuery(conn, build_sql("INSERT INTO povzroci (povzrocena_id, povzrocitelj_id)
                                   VALUES (",  v[["id.vojna"]], ",
-                                  ",v[["id.koalicija"]], con = conn))
+                                  ",v[["iz"]], ")", con = conn))
       
     }
   }, finally = {
     dbDisconnect(conn)
   })
   }
-povzroci <- vstavljanje.sodelovanje()
+povzroci <- vstavljanje.povzroci()
 
     

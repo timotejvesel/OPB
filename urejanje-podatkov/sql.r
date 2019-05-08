@@ -5,7 +5,7 @@ library(RPostgreSQL)
 
 source("auth.R")
 
-# Povežemo se z gonilnikom za PostgreSQL
+# Pove?emo se z gonilnikom za PostgreSQL
 drv <- dbDriver("PostgreSQL")
 conn <- dbConnect(drv, dbname = db, host = host,
                   user = user, password = password)
@@ -61,7 +61,7 @@ tryCatch({
                               FOREIGN KEY (koalicija_id) REFERENCES koalicija(id))", con = conn))
   
   dbSendQuery(conn, build_sql("CREATE TABLE povzroci (
-                              povzrocitelj_id INTEGER NOT NULL,
+                              povzrocitelj_id INTEGER,
                               povzrocena_id INTEGER NOT NULL,
                               FOREIGN KEY(povzrocena_id)  REFERENCES vojna(id),
                               FOREIGN KEY(povzrocitelj_id) REFERENCES vojna(id))", con = conn))
@@ -85,9 +85,9 @@ tryCatch({
   # Rezultat dobimo kot razpredelnico (data frame)
 }, finally = {
   # Na koncu nujno prekinemo povezavo z bazo,
-  # saj preveè odprtih povezav ne smemo imeti
+  # saj preve? odprtih povezav ne smemo imeti
   dbDisconnect(conn)
   # Koda v finally bloku se izvede v vsakem primeru
   # - bodisi ob koncu izvajanja try bloka,
-  # ali pa po tem, ko se ta konèa z napako
+  # ali pa po tem, ko se ta kon?a z napako
 })
