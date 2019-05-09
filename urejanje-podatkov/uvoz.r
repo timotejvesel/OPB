@@ -364,7 +364,7 @@ povzroci <- skupna[,c("id.vojna", "iz")]
 povzroci <- povzroci %>% replace_with_na(replace = list(iz = c(-8)))
 povzroci <- unique(povzroci)
 povzroci$iz <- gsub("404, 410", '404', povzroci$iz)
-nova.vrstica <- data.frame(id.vojna = "79", iz = "410")
+nova.vrstica <- data.frame(id.vojna = 79, iz = 410)
 nova.vrstica$id.vojna <- as.integer(nova.vrstica$id.vojna)
 nova.vrstica$iz <- as.integer(nova.vrstica$iz)
 povzroci$iz <- as.integer(povzroci$iz)
