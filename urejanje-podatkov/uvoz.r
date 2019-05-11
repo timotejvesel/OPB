@@ -1,3 +1,5 @@
+library(naniar)
+
 ##### Uvoz inter
 uvozi.inter <- function() {
   inter <- read_csv2("podatki/Inter_popravljen.csv",
@@ -330,7 +332,6 @@ sodelujoci$ime <- as.character(sodelujoci$ime)
 ### tabela koalicija
 
 # neznano stevilo zrtec (-9) zamenjamo z NA
-library(naniar)
 skupna <- skupna %>% replace_with_na(replace = list(zrtve = c(-8,-9)))
 
 koalicija <- data.frame(stran = integer(),id.vojna = integer(),
@@ -358,3 +359,15 @@ koalicija.z <- koalicija[,c("stran", "id.vojna", "id.koalicija" )]
 sodelovanje <- right_join(skupna.z, koalicija.z, by = c("stran","id.vojna"))
 
 
+### tabela povzroci
+povzroci <- skupna[,c("id.vojna", "iz")]
+povzroci <- povzroci %>% replace_with_na(replace = list(iz = c(-8)))
+povzroci <- unique(povzroci)
+povzroci$iz <- gsub("404, 410", '404', povzroci$iz)
+nova.vrstica <- data.frame(id.vojna = 79, iz = 410)
+nova.vrstica$id.vojna <- as.integer(nova.vrstica$id.vojna)
+nova.vrstica$iz <- as.integer(nova.vrstica$iz)
+povzroci$iz <- as.integer(povzroci$iz)
+povzroci <- rbind(nova.vrstica, povzroci)
+povzroci$iz <- as.integer(povzroci$iz)
+povzroci <- povzroci[!is.na(povzroci$iz),]
