@@ -356,3 +356,5 @@ skupna.z <- skupna[,c("id.vojna", "stran", "datum.zacetek", "datum.konec", "zrtv
 koalicija.z <- koalicija[,c("stran", "id.vojna", "id.koalicija" )]
 
 sodelovanje <- right_join(skupna.z, koalicija.z, by = c("stran","id.vojna"))
+
+
