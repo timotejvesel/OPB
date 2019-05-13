@@ -15,13 +15,14 @@ vstavljanje.vojna <- function(){
     
     for (i in 1:nrow(vojna)){
       v <- vojna[i, ]
-      dbSendQuery(conn, build_sql("INSERT INTO vojna (id,ime,zacetek,konec,zmagovalec,obmocje)
+      dbSendQuery(conn, build_sql("INSERT INTO vojna (id,ime,zacetek,konec,zmagovalec,obmocje, zrtve)
                                   VALUES (", v[["id.vojna"]], ",
                                   ",v[["ime"]], ", 
                                   ",v[["datum.zacetek"]], ",
                                   ",v[["datum.konec"]], ",
                                   ",v[["izid"]], ",
-                                  ",v[["obmocje"]], ")", con = conn))
+                                  ",v[["obmocje"]], ",
+                                  ", v[["zrtve"]], ")", con = conn))
       
     }
   }, finally = {

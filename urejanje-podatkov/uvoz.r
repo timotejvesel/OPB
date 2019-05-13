@@ -296,29 +296,30 @@ skupna <- right_join(skupna, st, by = "drzava")
 
 ### tabela vojna
 # za zacetek in konec vojne vzamemo min oz. max datuma zacetka oz. konca
-vojna <- unique(skupna[,c("id.vojna","ime","datum.zacetek","datum.konec", "izid","obmocje")])
+vojna <- unique(skupna[,c("id.vojna","ime","datum.zacetek","datum.konec", "izid","obmocje", "zrtve")])
 vojna1 <- vojna %>% group_by(id.vojna,ime,izid) %>% summarise(datum.zacetek = min(datum.zacetek)) %>% ungroup()
 vojna2 <- vojna %>% group_by(id.vojna) %>% summarise(datum.konec = max(datum.konec)) %>% ungroup()
 vojna3 <- vojna %>% group_by(id.vojna) %>% summarise(obmocje = toString(obmocje)) %>% ungroup()
+vojna5 <-  vojna %>% group_by(id.vojna) %>% summarise(zrtve = sum(zrtve)) %>% ungroup()
 
 vojna4 <- inner_join(vojna1,vojna2, by = "id.vojna")
 vojna4 <- inner_join(vojna3,vojna4, by = "id.vojna")
-
+vojna5 <- inner_join(vojna4,vojna5, by = "id.vojna")
 
 # odstrani ponavljajoca se obmocja v posamezni vojni
 for (i in 1:nrow(vojna4)) {
-  if (vojna4$izid == 8 ) {
+  if (vojna5$izid == 8 ) {
     
   }
-  vojna4$obmocje[i] <- paste(vojna4$obmocje[i],",", sep = '')
-  str <- vojna4$obmocje[i]
+  vojna5$obmocje[i] <- paste(vojna5$obmocje[i],",", sep = '')
+  str <- vojna5$obmocje[i]
   d <- unlist(strsplit(str, split=" "))
-  vojna4$obmocje[i] <- paste(unique(d), collapse = ' ')
+  vojna5$obmocje[i] <- paste(unique(d), collapse = ' ')
   # odstrani zadnjo vejico
-  vojna4$obmocje[i] <- gsub(",$", "", vojna4$obmocje[i])
+  vojna5$obmocje[i] <- gsub(",$", "", vojna5$obmocje[i])
 }
-vojna <- vojna4
-vojna <- vojna[c("id.vojna","ime","datum.zacetek","datum.konec","izid","obmocje")]
+vojna <- vojna5
+vojna <- vojna[c("id.vojna","ime","datum.zacetek","datum.konec","izid","obmocje", "zrtve")]
 
 
 #### tabela sodelujoci
