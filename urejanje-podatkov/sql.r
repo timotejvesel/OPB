@@ -90,4 +90,36 @@ tryCatch({
   # Koda v finally bloku se izvede v vsakem primeru
   # - bodisi ob koncu izvajanja try bloka,
   # ali pa po tem, ko se ta kon?a z napako
+  
+  
+  
+  pravice <- function(){
+    # Uporabimo tryCatch,(da se povežemo in bazo in odvežemo)
+    # da prisilimo prekinitev povezave v primeru napake
+    tryCatch({
+      # Vzpostavimo povezavo
+      conn <- dbConnect(drv, dbname = db, host = host,#drv=s čim se povezujemo
+                        user = user, password = password)
+      
+      dbSendQuery(conn, build_sql("GRANT ALL ON DATABASE sem2019_timotejv TO martinpr WITH GRANT OPTION"))
+      
+      dbSendQuery(conn, build_sql("GRANT ALL ON SCHEMA public TO martinpr WITH GRANT OPTION"))
+      
+      dbSendQuery(conn, build_sql("GRANT ALL ON ALL TABLES IN SCHEMA public TO martinpr WITH GRANT OPTION"))
+      dbSendQuery(conn, build_sql("GRANT ALL ON ALL TABLES IN SCHEMA public TO timotejv WITH GRANT OPTION"))
+      
+      
+      dbSendQuery(conn, build_sql("GRANT CONNECT ON DATABASE sem2019_timotejv TO javnost"))
+      dbSendQuery(conn, build_sql("GRANT SELECT ON ALL TABLES IN SCHEMA public TO javnost"))
+      
+      
+      
+    }, finally = {
+      # Na koncu nujno prekinemo povezavo z bazo,
+      # saj preveč odprtih povezav ne smemo imeti
+      dbDisconnect(conn) #PREKINEMO POVEZAVO
+      # Koda v finally bloku se izvede, preden program konča z napako
+    })
+  }
+  pravice()
 })
