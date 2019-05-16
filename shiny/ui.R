@@ -1,7 +1,7 @@
 library(shiny)
 library(shinythemes)
 
-shinyUI(fluidPage(theme = shinytheme("superhero"),
+shinyUI(fluidPage(theme = shinytheme("cerulean"),
                   
                   
                   titlePanel("Iskalnik po vseh vojnah od leta 1800"),
@@ -13,7 +13,7 @@ shinyUI(fluidPage(theme = shinytheme("superhero"),
                                sidebarPanel(
                                  uiOutput("izbor.sodelujoci")
                                ),
-                               mainPanel(tableOutput("izdelki"))
+                               mainPanel(DT::dataTableOutput("sodel"), width=12)
                       )
                       
                       

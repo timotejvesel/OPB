@@ -81,7 +81,7 @@ uvozi.intra <- function() {
                        "dan.konec", "leto.konec", "iz",
                        "obmocje","zacetnik", "izid", "v", "zrtve")
   
-  intra$datum.zacetek <- as.Date(with(intra, paste(leto.zacetek, mesec.zacetek, dan.zacetek,sep="-")), "%Y-%m-%d")
+  intra$datum.zacetek <- as.Date(with(intra, paste(dan.zacetek, mesec.zacetek, leto.zacetek,sep="-")), "%d-%m-%Y")
   intra$datum.konec <- as.Date(with(intra, paste(leto.konec, mesec.konec, dan.konec,sep="-")), "%Y-%m-%d")
   
   

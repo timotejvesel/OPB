@@ -4,7 +4,7 @@ library(dplyr)
 library(dbplyr)
 library(RPostgreSQL)
 
-source("auth_public.R")
+source("../auth_public.r")
 
 #tukaj klici sql, ki se povezejo na ui.R
 
@@ -26,29 +26,41 @@ shinyServer(function(input, output,session) {
   
   output$izbor.sodelujoci <- renderUI({
     
-    izbira_sodelujoci = dbGetQuery(conn, build_sql("SELECT ime FROM sodelujoci"))
-    Encoding(izbira_vrste[,1])="UTF-8" #vsakic posebej je potrebno character stolpce spremeniti v pravi encoding.
+    izbira_sodelujoci = dbGetQuery(conn, build_sql("SELECT id, ime FROM sodelujoci ORDER BY ime"))
     
     selectInput("sodelujoci",
                 label = "Izberite sodelujocega:",
-                choices = izbira_sodelujoci
+                choices = setNames(izbira_sodelujoci$id, izbira_sodelujoci$ime)
     )
   })
 
   
   
   najdi.vojne <- reactive({
-    
-    sql <- "SELECT vojna.ime, sodelovanje_koal.zacetek, sodelovanje_koal.konec, sodelovanje_koal.umrli AS zrtve FROM sodelovanje_koal
+    validate(need(!is.null(input$sodelujoci), "Izberi državo!"))
+    sql <- build_sql("SELECT DISTINCT sodelujoci.ime, vojna.ime,
+            sodelovanje_koal.zacetek, sodelovanje_koal.konec,
+            -- to_char(sodelovanje_koal.zacetek, 'DD.MM.YYYY') AS zacetek,
+            -- to_char(sodelovanje_koal.konec, 'DD.MM.YYYY') AS konec,
+            sodelovanje_koal.umrli AS zrtve FROM sodelovanje_koal
             JOIN koalicija ON koalicija.id = koalicija_id
-            JOIN vojna ON vojna.id = sodelovanje_vojna" 
-    query <- sqlInterpolate(conn, sql) #preprecimo sql injectione
-    t=dbGetQuery(conn,query)
-    
-  })
+            JOIN vojna ON vojna.id = sodelovanje_vojna
+            JOIN sodelujoci ON sodelujoci.id = sodelovanje_koal.sodelujoci_id
+            WHERE sodelujoci.id = ", input$sodelujoci, con=conn)
+    data <- dbGetQuery(conn, sql)
+    data <- data[,c(2,3,4,5)]
+    # datumi v normalno obliko
+    #data[,2] <- as.character(data[,2])
+    #data[,3] <- as.character(data[,3])
+    data
 
+  })
   
   
+  output$sodel <- DT::renderDataTable(DT::datatable({ #glavna tabela rezultatov
+    tabela1=najdi.vojne()
+  }) %>% DT::formatDate(c('zacetek', 'konec'), method = "toLocaleDateString")) # datum v normalno obliko 
+                                                                                # +  pravilno sortiranje
   
 })
   
