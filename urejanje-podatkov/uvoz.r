@@ -372,3 +372,4 @@ povzroci$iz <- as.integer(povzroci$iz)
 povzroci <- rbind(nova.vrstica, povzroci)
 povzroci$iz <- as.integer(povzroci$iz)
 povzroci <- povzroci[!is.na(povzroci$iz),]
+

@@ -1,8 +1,5 @@
 #server za shiny
-library(shiny)
-library(dplyr)
-library(dbplyr)
-library(RPostgreSQL)
+#Najprej zaženi datoteko libraries.r
 
 source("../auth_public.r")
 
@@ -64,4 +61,43 @@ shinyServer(function(input, output,session) {
   
 })
   
+#Zgolj za oglede nas zanima še koliko vojn je vsaka zmagala, izgubila, koliko žrtev je utrpela
 
+# -------------------------------------------------------------------------------------------------
+
+# statistika
+
+
+output$statistika <- renderUI({
+  
+  izbira_stat = dbGetQuery(conn, build_sql(""))
+  
+  selectInput("statistika",
+              label = "Poglej, kaj o vojnah za vsako državo pravi statistika:"#,
+              #choices = setNames(izbira_sodelujoci$id, izbira_sodelujoci$ime)
+  )
+})
+
+
+
+statistic <- reactive({
+  validate(need(!is.null(input$sodelujoci), "Izberi drÅ¾avo!"))
+  #Ta SQL ni pravi
+  sql <- build_sql("SELECT SUM() AS zrtve,
+                           COUNT() AS stevilo_vojn, 
+                           zrtve/stevilo_vojn AS zrtve_na_vojno,
+                           COUNT() AS porazi
+                           porazi/stevilo_vojn AS delez_porazov
+                    FROM sodelovanje_koal
+                    JOIN....
+                    ",  con=conn)
+    data <- dbGetQuery(conn, sql)
+    data
+
+  })
+  
+  
+  output$stat <- DT::renderDataTable(DT::datatable({ #glavna tabela rezultatov
+    tabela1=statistic()
+  }) 
+})
