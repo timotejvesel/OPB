@@ -18,6 +18,18 @@ shinyUI(fluidPage(theme = shinytheme("cerulean"),
                       
                       
                       
+                    ),
+                    tabsetPanel(
+                      tabPanel("Sama statistika",
+                               
+                               sidebarPanel(
+                                 uiOutput("statistika")
+                               ),
+                               mainPanel(DT::dataTableOutput("stat"), width=12)
+                      )
+                      
+                      
+                      
                     )
                   )
                   
