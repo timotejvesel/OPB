@@ -65,6 +65,44 @@ shinyServer(function(input, output,session) {
 
 # -------------------------------------------------------------------------------------------------
 
+# iskanje po vojnah
+
+output$izbor.sodelujoci <- renderUI({
+  
+  izbira_sodelujoci = dbGetQuery(conn, build_sql("SELECT id, ime FROM vojna ORDER BY ime"))
+  
+  selectInput("vojne",
+              label = "Izberite vojno:",
+              choices = setNames(izbira_sodelujoci$id, izbira_sodelujoci$ime)
+  )
+})
+
+
+najdi.vojne <- reactive({
+  validate(need(!is.null(input$sodelujoci), "Izberi vojno!"))
+  sql <- build_sql("SELECT glavna.ime, k1.clani AS stran_1, k2.clani AS stran_2, glavna.zacetek, glavna.konec, glavna.zmagovalec, glavna.obmocje, povzrocitelj.povzrocitelj_id, povzrociteljica.ime AS povzrocena_iz FROM vojna glavna
+JOIN koalicija k1 ON k1.sodelovanje_vojna = glavna.id AND k1.stran = 1
+                   JOIN koalicija k2 ON k2.sodelovanje_vojna = glavna.id AND k2.stran = 2
+                   LEFT JOIN povzroci povzrocitelj ON povzrocitelj.povzrocena_id = glavna.id
+                   LEFT JOIN vojna povzrociteljica ON povzrocitelj.povzrocitelj_id = povzrociteljica.id
+          WHERE sodelujoci.id = ", input$sodelujoci, con=conn)
+  data <- dbGetQuery(conn, sql)
+  data <- data[,c(2,3,4,5)]
+  # datumi v normalno obliko
+  #data[,2] <- as.character(data[,2])
+  #data[,3] <- as.character(data[,3])
+  data
+  
+})
+
+
+output$sodel <- DT::renderDataTable(DT::datatable({ #glavna tabela rezultatov
+  tabela1=najdi.vojne()
+}) %>% DT::formatDate(c('zacetek', 'konec'), method = "toLocaleDateString")) # datum v normalno obliko 
+                                                                            # +  pravilno sortiranje
+
+# -------------------------------------------------------------------------------------------------
+
 # statistika
 
 
