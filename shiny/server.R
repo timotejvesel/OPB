@@ -1,5 +1,5 @@
 #server za shiny
-#Najprej za�eni datoteko libraries.r
+#Najprej zaženi datoteko libraries.r
 
 source("../auth_public.r")
 
@@ -34,7 +34,7 @@ shinyServer(function(input, output,session) {
   
   
   najdi.vojne <- reactive({
-    validate(need(!is.null(input$sodelujoci), "Izberi državo!"))
+    validate(need(!is.null(input$sodelujoci), "Izberi drÅ¾avo!"))
     sql <- build_sql("SELECT DISTINCT sodelujoci.ime, vojna.ime,
             sodelovanje_koal.zacetek, sodelovanje_koal.konec,
             -- to_char(sodelovanje_koal.zacetek, 'DD.MM.YYYY') AS zacetek,
@@ -61,7 +61,7 @@ shinyServer(function(input, output,session) {
   
 })
   
-#Zgolj za oglede nas zanima �e koliko vojn je vsaka zmagala, izgubila, koliko �rtev je utrpela
+#Zgolj za oglede nas zanima še koliko vojn je vsaka zmagala, izgubila, koliko žrtev je utrpela
 
 # -------------------------------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ output$statistika <- renderUI({
   izbira_stat = dbGetQuery(conn, build_sql(""))
   
   selectInput("statistika",
-              label = "Poglej, kaj o vojnah za vsako dr�avo pravi statistika:"#,
+              label = "Poglej, kaj o vojnah za vsako državo pravi statistika:"#,
               #choices = setNames(izbira_sodelujoci$id, izbira_sodelujoci$ime)
   )
 })
@@ -81,15 +81,19 @@ output$statistika <- renderUI({
 
 
 statistic <- reactive({
-  validate(need(!is.null(input$sodelujoci), "Izberi državo!"))
+  validate(need(!is.null(input$sodelujoci), "Izberi drÅ¾avo!"))
   #Ta SQL ni pravi
-  sql <- build_sql("SELECT SUM() AS zrtve,
-                           COUNT() AS stevilo_vojn, 
-                           zrtve/stevilo_vojn AS zrtve_na_vojno,
-                           COUNT() AS porazi
-                           porazi/stevilo_vojn AS delez_porazov
+  sql <- build_sql("SELECT sodelujoci.ime AS ime, 
+                           SUM(sodelovanje_koal.umrli) AS zrtve, 
+                           COUNT(sodelovanje_koal.sodelujoci_id) AS stevilo_vojn, 
+                           SUM(sodelovanje_koal.umrli) / count(sodelovanje_koal.sodelujoci_id) AS zrtve_na_vojno 
                     FROM sodelovanje_koal
-                    JOIN....
+                    JOIN sodelujoci ON sodelovanje_koal.sodelujoci_id = sodelujoci.id
+                    JOIN koalicija ON sodelovanje_koal.koalicija_id = koalicija.id
+                    JOIN vojna ON koalicija.sodelovanje_vojna = vojna.id
+                    GROUP BY sodelujoci.id
+#Poglej še za koliko zmag bo
+     
                     ",  con=conn)
     data <- dbGetQuery(conn, sql)
     data
