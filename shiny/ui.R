@@ -14,23 +14,21 @@ shinyUI(fluidPage(theme = shinytheme("cerulean"),
                                  uiOutput("izbor.sodelujoci")
                                ),
                                mainPanel(DT::dataTableOutput("sodel"), width=12)
-                      )
+                      
                       
                       
                       
                     ),
-                    tabsetPanel(
-                      tabPanel("Sama statistika",
+                      tabPanel("Iskanje po vojnah",
                                
                                sidebarPanel(
-                                 uiOutput("statistika")
+                                 uiOutput("izbor.vojna")
                                ),
-                               mainPanel(DT::dataTableOutput("stat"), width=12)
-                      )
+                               mainPanel(DT::dataTableOutput("voj"), width=12)
+                      ))
                       
                       
                       
-                    )
                   )
                   
 ))

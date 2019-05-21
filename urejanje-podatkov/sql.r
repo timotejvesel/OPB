@@ -5,7 +5,7 @@ library(RPostgreSQL)
 
 source("auth.R")
 
-# Pove?emo se z gonilnikom za PostgreSQL
+# Povezemo se z gonilnikom za PostgreSQL
 drv <- dbDriver("PostgreSQL")
 conn <- dbConnect(drv, dbname = db, host = host,
                   user = user, password = password)
@@ -102,16 +102,16 @@ tryCatch({
       conn <- dbConnect(drv, dbname = db, host = host,#drv=s čim se povezujemo
                         user = user, password = password)
       
-      dbSendQuery(conn, build_sql("GRANT ALL ON DATABASE sem2019_timotejv TO martinpr WITH GRANT OPTION"))
+      dbSendQuery(conn, build_sql("GRANT ALL ON DATABASE sem2019_timotejv TO martinpr WITH GRANT OPTION", con = conn))
       
-      dbSendQuery(conn, build_sql("GRANT ALL ON SCHEMA public TO martinpr WITH GRANT OPTION"))
+      dbSendQuery(conn, build_sql("GRANT ALL ON SCHEMA public TO martinpr WITH GRANT OPTION", con = conn))
       
-      dbSendQuery(conn, build_sql("GRANT ALL ON ALL TABLES IN SCHEMA public TO martinpr WITH GRANT OPTION"))
-      dbSendQuery(conn, build_sql("GRANT ALL ON ALL TABLES IN SCHEMA public TO timotejv WITH GRANT OPTION"))
+      dbSendQuery(conn, build_sql("GRANT ALL ON ALL TABLES IN SCHEMA public TO martinpr WITH GRANT OPTION", con = conn))
+      dbSendQuery(conn, build_sql("GRANT ALL ON ALL TABLES IN SCHEMA public TO timotejv WITH GRANT OPTION", con = conn))
       
       
-      dbSendQuery(conn, build_sql("GRANT CONNECT ON DATABASE sem2019_timotejv TO javnost"))
-      dbSendQuery(conn, build_sql("GRANT SELECT ON ALL TABLES IN SCHEMA public TO javnost"))
+      dbSendQuery(conn, build_sql("GRANT CONNECT ON DATABASE sem2019_timotejv TO javnost", con = conn))
+      dbSendQuery(conn, build_sql("GRANT SELECT ON ALL TABLES IN SCHEMA public TO javnost", con = conn))
       
       
       
