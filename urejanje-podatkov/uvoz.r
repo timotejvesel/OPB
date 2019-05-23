@@ -297,6 +297,7 @@ skupna <- right_join(skupna, st, by = "drzava")
 ### tabela vojna
 # za zacetek in konec vojne vzamemo min oz. max datuma zacetka oz. konca
 vojna <- unique(skupna[,c("id.vojna","ime","datum.zacetek","datum.konec", "izid","obmocje", "zrtve")])
+vojna <- vojna %>% replace_with_na(replace = list(zrtve = c(-8,-9)))
 vojna1 <- vojna %>% group_by(id.vojna,ime,izid) %>% summarise(datum.zacetek = min(datum.zacetek)) %>% ungroup()
 vojna2 <- vojna %>% group_by(id.vojna) %>% summarise(datum.konec = max(datum.konec)) %>% ungroup()
 vojna3 <- vojna %>% group_by(id.vojna) %>% summarise(obmocje = toString(obmocje)) %>% ungroup()
@@ -318,7 +319,7 @@ for (i in 1:nrow(vojna4)) {
   # odstrani zadnjo vejico
   vojna5$obmocje[i] <- gsub(",$", "", vojna5$obmocje[i])
 }
-vojna <- vojna5
+vojna <- vojna5 
 vojna <- vojna[c("id.vojna","ime","datum.zacetek","datum.konec","izid","obmocje", "zrtve")]
 
 

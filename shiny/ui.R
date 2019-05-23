@@ -22,16 +22,25 @@ shinyUI(fluidPage(theme = shinytheme("cerulean"),
                       tabPanel("Iskanje po vojnah",
                                
                                sidebarPanel(
-                                 uiOutput("izbor.vojna")
+                                           sliderInput("min_max",
+                                             "Stevilo zrtev:",
+                                             min = 0,
+                                             max = 17000000,
+                                             value = c(0,17000000),
+                                             step = 1,
+                                             post = "",
+                                             sep = ".")
                                ),
                                mainPanel(DT::dataTableOutput("voj"), width=12)
+                               
+                      )
                       ))
                       
                       
                       
                   )
                   
-))
+)
 
 
 
