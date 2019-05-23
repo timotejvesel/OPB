@@ -75,7 +75,7 @@ tryCatch({
   
   dbSendQuery(conn, build_sql("CREATE TABLE komentar (
                               id SERIAL PRIMARY KEY,
-                              uporabnik_id INTEGER,
+                              uporabnik_ime TEXT,
                               vojna_id INTEGER,
                               besedilo TEXT,
                               cas TIMESTAMP,
