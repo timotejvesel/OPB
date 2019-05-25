@@ -225,14 +225,14 @@ output$voj <- DT::renderDataTable(DT::datatable({ #glavna tabela rezultatov
   tabela1=najdi.vojna()
 }) %>% DT::formatDate(c('zacetek', 'konec'), method = "toLocaleDateString")) # datum v normalno obliko
                                                                             # +  pravilno sortiranje
-})
+
 
 
 # -------------------------------------------------------------------------------------------------
 #komentarji 
 mnenje <- renderText({input$komentar})
 sql2 <- build_sql("INSERT INTO komentar (id,uporabnik_ime,vojna_id, besedilo,cas)
-                  VALUES(clan,",input$vojna,",", mnenje, ",NOW()")
+                  VALUES(clan,",input$vojna,",", mnenje, ",NOW()", con = conn)
 data2 <- dbGetQuery(conn, sql2)
 
 najdi.komentar <- reactive({
@@ -244,6 +244,7 @@ najdi.komentar <- reactive({
 
 output$komentiranje <- DT::renderDataTable((DT::datatable(tabela2=najdi.komentar())))
 
+})
 
 
 # -------------------------------------------------------------------------------------------------
