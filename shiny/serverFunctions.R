@@ -10,24 +10,22 @@ sign.up.user <- function(username, pass){
   pass <- hashpw(pass)
   clan <- username
   
-  useraccount <- data.frame(id, username = clan, password=pass)
+  useraccount <- data.frame(username = clan, password=pass)
   
-  #kako dodamo zaporedni id uporabnika v bazi?
   
   tryCatch({
     drv <- dbDriver("PostgreSQL")
     conn <- dbConnect(drv, dbname = db, host = host, user = user, password = password)
     userTable <- tbl(conn, "uporabnik")
     # Pogledamo, èe je uporabnisko ime ze zasedeno
-    if(0 != dim((userTable %>% filter(username == uporabnik) %>% collect()))[1]){
+    if(0 != dim((userTable %>% filter(username == clan) %>% collect()))[1]){
       success <- -10
     }
     # Ce nam if stavek vrne True, potem v bazo uporabnik dodamo uporabnika z zaporedno stevilko, uporabniskim in geslom
-    sql_prijava <- build_sql("INSERT INTO uporabnik(id,username,hash)
-                             VALUES(clan,pass)")
+    sql_prijava <- build_sql("INSERT INTO uporabnik(username,hash)
+                             VALUES(",clan,",",pass,")", con = conn)
     data_sql_prijava <- dbGetQuery(conn,sql_prijava)
     success <- 1
-    
   }, finally = {
     dbDisconnect(conn)
     return(success)
@@ -50,18 +48,22 @@ sign.in.user <- function(username, pass){
     obstoj <- 0
     # obstoj = 0, ce username in geslo ne obstajata,  1 ce obstaja
     uporabnik <- username
-    geslo <- (userTable %>% filter(username == uporabnik) %>% select(password) %>% collect())[[1]]
-    
-    if(checkpw(pass,geslo)){
+    hashGesla <- (userTable %>% filter(username == uporabnik) %>% collect() %>% pull(hash))[[1]]
+    if(pass == hashGesla) {
       obstoj <- 1
     }
+    # if(checkpw(pass,hashGesla)){
+    #   obstoj <- 1
+    # }
+    print("X3")
     if(obstoj == 0){
       success <- -10
     }else{
       uporabnikID <- (userTable %>% filter(username == uporabnik) %>%
-                        select(userid) %>% collect())[[1]]
+                        collect() %>% pull(id))[[1]]
       success <- 1
     }
+    print("X4")
   },warning = function(w){
     print(w)
   },error = function(e){
