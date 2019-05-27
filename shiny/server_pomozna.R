@@ -149,12 +149,13 @@ shinyServer(function(input,output,session) {
 #     tabela1=statistic()
 #   })) 
 
-#SELECT sodelujoci.id, MIN(sodelujoci.ime), COUNT(*) FROM sodelovanje_koal
+# SELECT sodelujoci.id, sodelujoci.ime, COUNT(*) AS stevilo_vojn, SUM(sodelovanje_koal.umrli) AS zrtve , SUM(sodelovanje_koal.umrli) / COUNT(*) AS zrtve_na_vojno, 
+# SUM(DATEDIFF(Day, MIN(joindate), MAX(joindate))) AS stevilo_dni_vojskovanja
+# FROM sodelovanje_koal 
 # JOIN koalicija ON koalicija.id = koalicija_id
 # JOIN vojna ON vojna.id = sodelovanje_vojna
 # JOIN sodelujoci ON sodelujoci.id = sodelovanje_koal.sodelujoci_id
 # GROUP BY(sodelujoci.id)
-
 
 
 
