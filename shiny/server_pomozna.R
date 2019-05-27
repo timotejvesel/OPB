@@ -125,7 +125,7 @@ shinyServer(function(input,output,session) {
 # 
 # 
 # statistic <- reactive({
-#   validate(need(!is.null(input$sodelujoci), "Izberi drÅ¾avo!"))
+#   validate(need(!is.null(input$sodelujoci), "Izberi drzavo!"))
 #   #Ta SQL ni pravi
 #   sql <- build_sql("SELECT sodelujoci.ime AS ime, 
 #                            SUM(sodelovanje_koal.umrli) AS zrtve, 
