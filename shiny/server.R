@@ -223,10 +223,11 @@ output$voj <- DT::renderDataTable(DT::datatable({ #glavna tabela rezultatov
 
 # -------------------------------------------------------------------------------------------------
 #komentarji 
-#mnenje <- renderText({input$komentar})
-#sql2 <- build_sql("INSERT INTO komentar (id,uporabnik_ime,vojna_id, besedilo,cas)
-#                  VALUES(clan,",input$vojna,",", mnenje, ",NOW()", con = conn)
-#data2 <- dbGetQuery(conn, sql2)
+                 #narediti morava v reactive
+mnenje <- renderText({input$komentar})
+sql2 <- build_sql("INSERT INTO komentar (id,uporabnik_ime,vojna_id, besedilo,cas)
+                  VALUES(clan,",input$vojna,",", mnenje, ",NOW()", con = conn)
+data2 <- dbGetQuery(conn, sql2)
 
 najdi.komentar <- reactive({
   validate(need(!is.null(input$vojna), "Izberi vojno!"))
