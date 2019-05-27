@@ -1,6 +1,7 @@
 #server za shiny
 #Najprej zaženi datoteko libraries.r
 
+source("../lib/libraries.R")
 source("../auth_public.r")
 source("serverFunctions.R")
 
@@ -54,13 +55,9 @@ shinyServer(function(input,output,session) {
                })
   
   # Greyout of signup button
-  observeEvent(c(input$SignUpName, input$SignUpSurname, input$SignUpAddress, input$SignUpCity,
-                 input$SignUpCountry, input$SignUpEmso, input$SignUpMail, 
-                 input$SignUpUserName, input$SignUpPassword), {
+  observeEvent(c(input$SignUpUserName, input$SignUpPassword), {
                    shinyjs::toggleState("signup_btnSignUp",
-                                        all(c(input$SignUpName, input$SignUpSurname, input$SignUpAddress, input$SignUpCity,
-                                              input$SignUpCountry, input$SignUpEmso, input$SignUpMail, 
-                                              input$SignUpUserName, input$SignUpPassword)!="")# & 
+                                        all(c(input$SignUpUserName, input$SignUpPassword)!="")# & 
                                         # Preveri, ce samo latin characterji
                                         # !any(grepl("[^\x20-\x7F]",
                                         #         c(input$SignUpName, input$SignUpSurname, input$SignUpAddress, input$SignUpCity,
@@ -73,14 +70,10 @@ shinyServer(function(input,output,session) {
   observeEvent(input$signup_btnSignUp,
                {
                  if(any(grepl("[^\x20-\x7F]",
-                              c(input$SignUpName, input$SignUpSurname, input$SignUpAddress, input$SignUpCity,
-                                input$SignUpCountry, input$SignUpEmso, input$SignUpMail,
-                                input$SignUpUserName, input$SignUpPassword)))){
+                              c(input$SignUpUserName, input$SignUpPassword)))){
                    success <- -1
                  }else{
-                   success <- sign.up.user(input$SignUpName, input$SignUpSurname, input$SignUpAddress, 
-                                           input$SignUpCity, input$SignUpCountry, input$SignUpEmso,
-                                           input$SignUpMail, input$SignUpUserName, input$SignUpPassword)
+                   success <- sign.up.user(input$SignUpUserName, input$SignUpPassword)
                  }
                  if(success==1){
                    showModal(modalDialog(
@@ -230,10 +223,10 @@ output$voj <- DT::renderDataTable(DT::datatable({ #glavna tabela rezultatov
 
 # -------------------------------------------------------------------------------------------------
 #komentarji 
-mnenje <- renderText({input$komentar})
-sql2 <- build_sql("INSERT INTO komentar (id,uporabnik_ime,vojna_id, besedilo,cas)
-                  VALUES(clan,",input$vojna,",", mnenje, ",NOW()", con = conn)
-data2 <- dbGetQuery(conn, sql2)
+#mnenje <- renderText({input$komentar})
+#sql2 <- build_sql("INSERT INTO komentar (id,uporabnik_ime,vojna_id, besedilo,cas)
+#                  VALUES(clan,",input$vojna,",", mnenje, ",NOW()", con = conn)
+#data2 <- dbGetQuery(conn, sql2)
 
 najdi.komentar <- reactive({
   validate(need(!is.null(input$vojna), "Izberi vojno!"))
