@@ -56,9 +56,13 @@ sign.in.user <- function(username, pass){
     
     
     hashGesla <- (userTable %>% filter(username == uporabnik) %>% collect() %>% pull(hash))[[1]]
-    if(toString(hashGesla) == toString(hashpw(toString(geslo)))){
-       obstoj <- 1
-     }
+    if(hashGesla == geslo){
+      obstoj <- 1
+    }
+    
+    #if(toString(hashGesla) == toString(hashpw(toString(geslo)))){
+    #   obstoj <- 1
+    # }
     if(obstoj == 0){
       success <- -10
     }else{
