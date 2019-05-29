@@ -1,7 +1,7 @@
 #server za shiny
 #Najprej zaženi datoteko libraries.r
 
-source("../lib/libraries.R")
+source("../lib/libraries.r")
 source("../auth_public.r")
 source("serverFunctions.R")
 
@@ -262,8 +262,6 @@ najdi.komentar <- reactive({
   komentarji
 })
 output$komentiranje <- DT::renderDataTable((DT::datatable(najdi.komentar())))
->>>>>>> 88ef26e8876b4068d2ebe5b92f6e8c21041608e1
-
 
 # -------------------------------------------------------------------------------------------------
 
