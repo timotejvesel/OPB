@@ -114,6 +114,8 @@ tryCatch({
       dbSendQuery(conn, build_sql("GRANT SELECT ON ALL TABLES IN SCHEMA public TO javnost", con = conn))
       dbSendQuery(conn, build_sql("GRANT INSERT ON TABLE uporabnik TO javnost", con = conn))
       dbSendQuery(conn, build_sql("GRANT ALL ON ALL SEQUENCES IN SCHEMA public  TO javnost", con = conn))
+      dbSendQuery(conn, build_sql("GRANT INSERT ON TABLE komentar TO javnost", con = conn))
+      dbSendQuery(conn, build_sql("GRANT ALL ON ALL SEQUENCES IN SCHEMA public  TO javnost", con = conn))
       
       
     }, finally = {
