@@ -21,9 +21,9 @@ tryCatch({
                               ime TEXT NOT NULL,
                               zacetek DATE,
                               konec DATE,
-                              zmagovalec INTEGER,
+                              zmagovalec TEXT,
                               obmocje TEXT,
-                              zrtve INTEGER)", con = conn)) # zmagovalec..... zacasni tip: INTEGER
+                              zrtve INTEGER)", con = conn))
   # 
   # dbSendQuery(conn, build_sql("CREATE TABLE drzava (
   #                             id SERIAL PRIMARY KEY,

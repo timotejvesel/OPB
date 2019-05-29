@@ -31,7 +31,7 @@ sidebar <- dashboardSidebar(hr(),
   sidebarMenu(id="vojne",
               menuItem("Pregled vojn",tabName = "vojne")),
   sidebarMenu(id="stat", 
-              menuItem("Statistika po vojnah", tabName = "stat")),
+              menuItem("Statistika po sodelujocih", tabName = "stat")),
   sidebarMenu(id="kometnar", 
               menuItem("Civilen diskurz o vojnah", tabName = "koment"))
   
@@ -47,13 +47,23 @@ body <- dashboardBody(
               ))),
     tabItem(tabName = "vojne",
             fluidRow(sidebarPanel(
-              uiOutput("izbor.vojna")
+              sliderInput("min_max",
+                          "Stevilo zrtev:",
+                          min = 0,
+                          max = 17000000,
+                          value = c(0,17000000),
+                          step = 1,
+                          post = "",
+                          sep = ".")
             ),
-            mainPanel(DT::dataTableOutput("voj"))
-            )),
+            mainPanel(DT::dataTableOutput("voj")
+            ))),
     tabItem(tabName = "stat",
-            fluidRow(
-            )),
+            fluidRow(sidebarPanel(
+              uiOutput("izbor.statistika")
+            ),
+            mainPanel(DT::dataTableOutput("stat")
+            ))),
     tabItem(tabName = "komentar",
             fluidRow( textInput("komentar", "Dodaj svoje mnenje", "Tvoje mnenje"),
                       verbatimTextOutput("value"),

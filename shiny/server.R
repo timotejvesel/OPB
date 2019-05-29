@@ -151,12 +151,12 @@ shinyServer(function(input,output,session) {
   
   
   najdi.sodelujoci <- reactive({
-    validate(need(!is.null(input$sodelujoci), "Izberi drzavo!"))
-    sql <- build_sql("SELECT DISTINCT sodelujoci.ime, vojna.ime,
-            sodelovanje_koal.zacetek, sodelovanje_koal.konec,
-            -- to_char(sodelovanje_koal.zacetek, 'DD.MM.YYYY') AS zacetek,
-            -- to_char(sodelovanje_koal.konec, 'DD.MM.YYYY') AS konec,
-            sodelovanje_koal.umrli AS zrtve FROM sodelovanje_koal
+    validate(need(!is.null(input$sodelujoci), "Izberi sodelujocega!"))
+    sql <- build_sql("SELECT DISTINCT sodelujoci.ime , vojna.ime AS \"Ime vojne\",
+            sodelovanje_koal.zacetek AS \"Zacetek sodelovanja\", sodelovanje_koal.konec AS \"Konec sodelovanja\", 
+            -- to_char(sodelovanje_koal.zacetek, 'DD.MM.YYYY'),
+            -- to_char(sodelovanje_koal.konec, 'DD.MM.YYYY'),
+            sodelovanje_koal.umrli AS \"Stevilo zrtev\" FROM sodelovanje_koal
             JOIN koalicija ON koalicija.id = koalicija_id
             JOIN vojna ON vojna.id = sodelovanje_vojna
             JOIN sodelujoci ON sodelujoci.id = sodelovanje_koal.sodelujoci_id
@@ -173,7 +173,7 @@ shinyServer(function(input,output,session) {
   
   output$sodel <- DT::renderDataTable(DT::datatable({ #glavna tabela rezultatov
     tabela=najdi.sodelujoci()
-  }) %>% DT::formatDate(c('zacetek', 'konec'), method = "toLocaleDateString")) # datum v normalno obliko 
+  }) %>% DT::formatDate(c('Zacetek sodelovanja', 'Konec sodelovanja'), method = "toLocaleDateString")) # datum v normalno obliko 
                                                                                 # +  pravilno sortiranje
   
 
@@ -194,40 +194,46 @@ shinyServer(function(input,output,session) {
 
 
   najdi.vojna <- reactive({
-    validate(need(!is.null(input$vojna), "Izberi vojno!"))
-    sql1 <- build_sql("SELECT glavna.ime, k1.clani AS stran_1, k2.clani AS stran_2,
-                    glavna.zacetek,glavna.konec,
-                    -- to_char(glavna.zacetek, 'DD.MM.YYYY') AS zacetek,
-                    -- to_char(glavna.konec, 'DD.MM.YYYY') AS konec, 
-                    glavna.zmagovalec, glavna.obmocje,
-                    povzrociteljica.ime AS povzrocena_iz,
-                    povzrocena.ime AS povzrocila_je FROM vojna glavna
+    # validate(need(!is.null(input$vojna), "Izberi vojno!"))
+    sql1 <- build_sql("SELECT glavna.ime AS \"Ime\", k1.clani AS \"Stran 1\", k2.clani AS \"Stran 2\",
+                    glavna.zacetek AS \"Zacetek\",glavna.konec AS \"Konec\",
+                    -- to_char(glavna.zacetek, 'DD.MM.YYYY'),
+                    -- to_char(glavna.konec, 'DD.MM.YYYY'), 
+                    glavna.zrtve AS \"Stevilo zrtev\",
+                    glavna.zmagovalec AS \"Zmagovalec\", glavna.obmocje AS \"Obmocje\",
+                    povzrociteljica.ime AS \"Povzrocena iz vojne\",
+                    povzrocena.ime AS \"Povzrocila je vojno \" FROM vojna glavna
                     JOIN koalicija k1 ON k1.sodelovanje_vojna = glavna.id AND k1.stran = 1
                     JOIN koalicija k2 ON k2.sodelovanje_vojna = glavna.id AND k2.stran = 2
                     LEFT JOIN povzroci povzrocitelj ON povzrocitelj.povzrocena_id = glavna.id
                     LEFT JOIN vojna povzrociteljica ON povzrocitelj.povzrocitelj_id = povzrociteljica.id
                     LEFT JOIN povzroci povzrocenec ON povzrocenec.povzrocitelj_id = glavna.id
                     LEFT JOIN vojna povzrocena ON povzrocenec.povzrocena_id = povzrocena.id
-                    WHERE glavna.id = ", input$vojna, con=conn)
+                    WHERE TRUE", con=conn)
+    if (!is.null(input$min_max[1])) {
+      sql1 <- build_sql(sql1, " AND (glavna.zrtve BETWEEN ", input$min_max[1], " AND ", input$min_max[2], " OR glavna.zrtve IS NULL)", con=conn)
+    }
     data1 <- dbGetQuery(conn, sql1)
-    # SPREMENI IMENA STOLPCEV V SHINY
+    data1
   })
 
 
-output$voj <- DT::renderDataTable(DT::datatable({ #glavna tabela rezultatov
-  tabela1=najdi.vojna()
-}) %>% DT::formatDate(c('zacetek', 'konec'), method = "toLocaleDateString")) # datum v normalno obliko
-                                                                            # +  pravilno sortiranje
+  output$voj <- DT::renderDataTable({
+    tabela1 = najdi.vojna()
+    validate(need(nrow(tabela1) > 0, "Ni podatkov"))
+    DT::datatable(tabela1) %>% DT::formatDate(c('Zacetek', 'Konec'), method = "toLocaleDateString") # datum v normalno obliko
+    # +  pravilno sortiranje
+  })
 
 
 
 # -------------------------------------------------------------------------------------------------
 #komentarji 
                  #narediti morava v reactive
-mnenje <- renderText({input$komentar})
-sql2 <- build_sql("INSERT INTO komentar (id,uporabnik_ime,vojna_id, besedilo,cas)
-                  VALUES(clan,",input$vojna,",", mnenje, ",NOW()", con = conn)
-data2 <- dbGetQuery(conn, sql2)
+# mnenje <- renderText({input$komentar})
+# sql2 <- build_sql("INSERT INTO komentar (id,uporabnik_ime,vojna_id, besedilo,cas)
+#                   VALUES(clan,",input$vojna,",", mnenje, ",NOW()", con = conn)
+# data2 <- dbGetQuery(conn, sql2)
 
 najdi.komentar <- reactive({
   validate(need(!is.null(input$vojna), "Izberi vojno!"))
@@ -238,48 +244,40 @@ najdi.komentar <- reactive({
 
 output$komentiranje <- DT::renderDataTable((DT::datatable(tabela2=najdi.komentar())))
 
-})
-
 
 # -------------------------------------------------------------------------------------------------
 
 # statistika
 
-# 
-# output$statistika <- renderUI({
-#   
-#   izbira_stat = dbGetQuery(conn, build_sql(""))
-#   
-#   selectInput("statistika",
-#               label = "Poglej, kaj o vojnah za vsako državo pravi statistika:"#,
-#               #choices = setNames(izbira_sodelujoci$id, izbira_sodelujoci$ime)
-#   )
-# })
-# 
-# 
-# 
-# statistic <- reactive({
-#   validate(need(!is.null(input$sodelujoci), "Izberi drÅ¾avo!"))
-#   #Ta SQL ni pravi
-#   sql <- build_sql("SELECT sodelujoci.ime AS ime, 
-#                            SUM(sodelovanje_koal.umrli) AS zrtve, 
-#                            COUNT(sodelovanje_koal.sodelujoci_id) AS stevilo_vojn, 
-#                            SUM(sodelovanje_koal.umrli) / count(sodelovanje_koal.sodelujoci_id) AS zrtve_na_vojno 
-#                     FROM sodelovanje_koal
-#                     JOIN sodelujoci ON sodelovanje_koal.sodelujoci_id = sodelujoci.id
-#                     JOIN koalicija ON sodelovanje_koal.koalicija_id = koalicija.id
-#                     JOIN vojna ON koalicija.sodelovanje_vojna = vojna.id
-#                     GROUP BY sodelujoci.id
-# #Poglej še za koliko zmag bo
-#      
-#                     ",  con=conn)
-#     data <- dbGetQuery(conn, sql)
-#     data
-# 
-#   })
-#   
-#   
-#   output$stat <- DT::renderDataTable(DT::datatable({ #glavna tabela rezultatov
-#     tabela1=statistic()
-#   })) 
+ output$izbor.statistika <- renderUI({
 
+   izbira_statistika = dbGetQuery(conn, build_sql("SELECT id, ime FROM sodelujoci ORDER BY ime", con = conn))
+
+   selectInput("statistika",
+               label = "Izberi sodelujocega:",
+               choices = setNames(izbira_statistika$id, izbira_statistika$ime)
+              
+   )
+ })
+
+
+ najdi.statistika <- reactive({
+   validate(need(!is.null(input$statistika), "Izberi sodelujocega!"))
+   sql3 <- build_sql("SELECT sodelujoci.id, sodelujoci.ime, COUNT(*) AS stevilo_vojn, SUM(sodelovanje_koal.umrli) AS zrtve,
+          SUM(sodelovanje_koal.umrli) / COUNT(*) AS zrtve_na_vojno, SUM(sodelovanje_koal.konec - sodelovanje_koal.zacetek) AS stevilo_dni_vojskovanja
+          FROM sodelovanje_koal
+          JOIN koalicija ON koalicija.id = koalicija_id
+          JOIN vojna ON vojna.id = sodelovanje_vojna
+          JOIN sodelujoci ON sodelujoci.id = sodelovanje_koal.sodelujoci_id
+          GROUP BY(sodelujoci.id),
+          WHERE sodelujoci.id = ", input$statistika, con=conn)
+     data3 <- dbGetQuery(conn, sql3)
+     data3
+
+   })
+
+   output$stat <- DT::renderDataTable(DT::datatable({
+     tabela3 = najdi.statistika()
+   }))
+
+})

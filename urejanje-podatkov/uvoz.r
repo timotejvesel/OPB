@@ -283,7 +283,6 @@ skupna <- rbind(inter,extra,intra,non)
 skupna$drzava <- gsub(".*United States.*", 'United States of America', skupna$drzava)
 skupna$drzava <- gsub(".*Boliva.*", 'Bolivia', skupna$drzava)
 
-
 drzava <- skupna$drzava
 st <- unique(data.frame(drzava))
 st$drzava.id <- seq.int(nrow(st))
@@ -307,7 +306,7 @@ vojna4 <- inner_join(vojna1,vojna2, by = "id.vojna")
 vojna4 <- inner_join(vojna3,vojna4, by = "id.vojna")
 vojna5 <- inner_join(vojna4,vojna5, by = "id.vojna")
 
-# odstrani ponavljajoca se obmocja v posamezni vojni
+
 for (i in 1:nrow(vojna4)) {
   if (vojna5$izid == 8 ) {
     
@@ -320,6 +319,31 @@ for (i in 1:nrow(vojna4)) {
   vojna5$obmocje[i] <- gsub(",$", "", vojna5$obmocje[i])
 }
 vojna <- vojna5 
+
+for (i in 1:length(vojna$izid)) {
+  if (vojna$izid[i] == 1) {
+    vojna$izid[i] <- "Zmagala je stran 1"
+  }
+  else if (vojna$izid[i] == 2) {
+    vojna$izid[i] <- "Zmagala je stran 2"
+  }
+  else if (vojna$izid[i] == 3) {
+    vojna$izid[i] <- "Kompromis"
+  }
+  else if (vojna$izid[i] == 4) {
+    vojna$izid[i] <- "Transformacija v drugo vojno"
+  }
+  else if (vojna$izid[i] == 5) {
+    vojna$izid[i] <- "Vojna je 2007 se potekala"
+  }
+  else if (vojna$izid[i] == 6) {
+    vojna$izid[i] <- "Pat pozicija"
+  }
+  else if (vojna$izid[i] == 7) {
+    vojna$izid[i] <- "Konflikt se nadaljuje pod nivojem vojne"
+  }
+}
+  
 vojna <- vojna[c("id.vojna","ime","datum.zacetek","datum.konec","izid","obmocje", "zrtve")]
 
 
