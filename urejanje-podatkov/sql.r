@@ -21,9 +21,9 @@ tryCatch({
                               ime TEXT NOT NULL,
                               zacetek DATE,
                               konec DATE,
-                              zmagovalec INTEGER,
+                              zmagovalec TEXT,
                               obmocje TEXT,
-                              zrtve INTEGER)", con = conn)) # zmagovalec..... zacasni tip: INTEGER
+                              zrtve INTEGER)", con = conn))
   # 
   # dbSendQuery(conn, build_sql("CREATE TABLE drzava (
   #                             id SERIAL PRIMARY KEY,
@@ -99,7 +99,7 @@ tryCatch({
     # da prisilimo prekinitev povezave v primeru napake
     tryCatch({
       # Vzpostavimo povezavo
-      conn <- dbConnect(drv, dbname = db, host = host,#drv=s čim se povezujemo
+      conn <- dbConnect(drv, dbname = db, host = host,
                         user = user, password = password)
       
       dbSendQuery(conn, build_sql("GRANT ALL ON DATABASE sem2019_timotejv TO martinpr WITH GRANT OPTION", con = conn))
@@ -112,7 +112,8 @@ tryCatch({
       
       dbSendQuery(conn, build_sql("GRANT CONNECT ON DATABASE sem2019_timotejv TO javnost", con = conn))
       dbSendQuery(conn, build_sql("GRANT SELECT ON ALL TABLES IN SCHEMA public TO javnost", con = conn))
-      
+      dbSendQuery(conn, build_sql("GRANT INSERT ON TABLE uporabnik TO javnost", con = conn))
+      dbSendQuery(conn, build_sql("GRANT ALL ON ALL SEQUENCES IN SCHEMA public  TO javnost", con = conn))
       
       
     }, finally = {

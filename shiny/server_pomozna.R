@@ -97,7 +97,6 @@ shinyServer(function(input,output,session) {
     }
     data1 <- dbGetQuery(conn, sql1)
     data1
-    # SPREMENI IMENA STOLPCEV V SHINY
   })
 
 
@@ -113,48 +112,49 @@ shinyServer(function(input,output,session) {
 # statistika za sodelujoce
 
 # output$statistika <- renderUI({
-#   
+#
 #   izbira_stat = dbGetQuery(conn, build_sql(""))
-#   
+#
 #   selectInput("statistika",
 #               label = "Poglej, kaj o vojnah za vsako državo pravi statistika:"#,
 #               #choices = setNames(izbira_sodelujoci$id, izbira_sodelujoci$ime)
 #   )
 # })
-# 
-# 
-# 
+#
+#
+#
 # statistic <- reactive({
-#   validate(need(!is.null(input$sodelujoci), "Izberi drÅ¾avo!"))
+#   validate(need(!is.null(input$sodelujoci), "Izberi drzavo!"))
 #   #Ta SQL ni pravi
-#   sql <- build_sql("SELECT sodelujoci.ime AS ime, 
-#                            SUM(sodelovanje_koal.umrli) AS zrtve, 
-#                            COUNT(sodelovanje_koal.sodelujoci_id) AS stevilo_vojn, 
-#                            SUM(sodelovanje_koal.umrli) / count(sodelovanje_koal.sodelujoci_id) AS zrtve_na_vojno 
+#   sql <- build_sql("SELECT sodelujoci.ime AS ime,
+#                            SUM(sodelovanje_koal.umrli) AS zrtve,
+#                            COUNT(sodelovanje_koal.sodelujoci_id) AS stevilo_vojn,
+#                            SUM(sodelovanje_koal.umrli) / count(sodelovanje_koal.sodelujoci_id) AS zrtve_na_vojno
 #                     FROM sodelovanje_koal
 #                     JOIN sodelujoci ON sodelovanje_koal.sodelujoci_id = sodelujoci.id
 #                     JOIN koalicija ON sodelovanje_koal.koalicija_id = koalicija.id
 #                     JOIN vojna ON koalicija.sodelovanje_vojna = vojna.id
 #                     GROUP BY sodelujoci.id
 # #Poglej še za koliko zmag bo
-#      
+#
 #                     ",  con=conn)
 #     data <- dbGetQuery(conn, sql)
 #     data
-# 
+#
 #   })
-#   
-#   
+#
+#
 #   output$stat <- DT::renderDataTable(DT::datatable({ #glavna tabela rezultatov
 #     tabela1=statistic()
-#   })) 
+#   }))
 
-#SELECT sodelujoci.id, MIN(sodelujoci.ime), COUNT(*) FROM sodelovanje_koal
+# SELECT sodelujoci.id, sodelujoci.ime, COUNT(*) AS stevilo_vojn, SUM(sodelovanje_koal.umrli) AS zrtve , SUM(sodelovanje_koal.umrli) / COUNT(*) AS zrtve_na_vojno,
+# SUM(DATEDIFF(Day, MIN(joindate), MAX(joindate))) AS stevilo_dni_vojskovanja
+# FROM sodelovanje_koal
 # JOIN koalicija ON koalicija.id = koalicija_id
 # JOIN vojna ON vojna.id = sodelovanje_vojna
 # JOIN sodelujoci ON sodelujoci.id = sodelovanje_koal.sodelujoci_id
 # GROUP BY(sodelujoci.id)
-
 
 
 
