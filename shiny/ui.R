@@ -65,9 +65,11 @@ body <- dashboardBody(
             mainPanel(DT::dataTableOutput("stat")
             ))),
     tabItem(tabName = "koment",
-            fluidRow( 
+            fluidRow(
               sidebarPanel(textInput("komentar", "Dodaj svoje mnenje", value = ""),
-                      verbatimTextOutput("value")),
+                           actionButton(inputId = "komentar",label = "Dodaj komentar"),
+                      verbatimTextOutput("value"),
+                      uiOutput("izbrana.vojna")),
               mainPanel(DT::dataTableOutput("komentiranje"))
                       
             )))
