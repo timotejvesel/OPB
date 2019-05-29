@@ -38,6 +38,7 @@ sidebar <- dashboardSidebar(hr(),
 )
 
 body <- dashboardBody(
+  #dodaj kaksno sliko?
   tabItems(
     tabItem(tabName = "drzave",
             fluidRow(sidebarPanel(
@@ -53,6 +54,7 @@ body <- dashboardBody(
             )),
     tabItem(tabName = "stat",
             fluidRow(
+              #Tu pride se en ouput, verjetno tabela
             )),
     tabItem(tabName = "komentar",
             fluidRow( textInput("komentar", "Dodaj svoje mnenje", "Tvoje mnenje"),
