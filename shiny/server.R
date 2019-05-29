@@ -1,7 +1,7 @@
 #server za shiny
 #Najprej zaženi datoteko libraries.r
 
-source("../lib/libraries.R")
+source("../lib/libraries.r")
 source("../auth_public.r")
 source("serverFunctions.R")
 
@@ -121,12 +121,12 @@ shinyServer(function(input,output,session) {
   })
   
   output$logintext <- renderText({
-    if(loggedIn()) return("Logout here.")
-    return("Login here")
+    if(loggedIn()) return("Izpiši se tukaj.")
+    return("Vpiši se tukaj")
   })
   
   output$dashboardLoggedUser <- renderText({
-    if(loggedIn()) return(paste("Welcome,", pridobi.ime.uporabnika(userID())))
+    if(loggedIn()) return(paste("Pozdravljen,", pridobi.ime.uporabnika(userID())))
     return("")
   })
   
@@ -230,18 +230,21 @@ shinyServer(function(input,output,session) {
 # -------------------------------------------------------------------------------------------------
 #komentarji 
                  #narediti morava v reactive
-# mnenje <- renderText({input$komentar})
-# sql2 <- build_sql("INSERT INTO komentar (id,uporabnik_ime,vojna_id, besedilo,cas)
-#                   VALUES(clan,",input$vojna,",", mnenje, ",NOW()", con = conn)
-# data2 <- dbGetQuery(conn, sql2)
-
+mnenje <- reactive({
+  ideja <- renderText({input$komentar})
+  sql2 <- build_sql("INSERT INTO komentar (id,uporabnik_ime,vojna_id, besedilo,cas)
+                   VALUES(clan,",input$vojna,",", ideja, ",NOW()", con = conn)
+  data2 <- dbGetQuery(conn, sql2)
+  data2
+  })
+  
 najdi.komentar <- reactive({
   validate(need(!is.null(input$vojna), "Izberi vojno!"))
   sql_komentar <- build_sql("SELECT * FROM komentar
                             WHERE vojna_id =",input$vojna)
+  komentarji <- dbGetQuery(conn, sql_komentar)
+  komentarji
 })
-  
-
 output$komentiranje <- DT::renderDataTable((DT::datatable(tabela2=najdi.komentar())))
 
 
