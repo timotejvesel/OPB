@@ -17,7 +17,7 @@ sign.up.user <- function(username, pass){
     drv <- dbDriver("PostgreSQL")
     conn <- dbConnect(drv, dbname = db, host = host, user = user, password = password)
     userTable <- tbl(conn, "uporabnik")
-    # Pogledamo, èe je uporabnisko ime ze zasedeno
+    # Pogledamo, ?e je uporabnisko ime ze zasedeno
     if(0 != dim((userTable %>% filter(username == clan) %>% collect()))[1]){
       success <- -10
     }
@@ -48,14 +48,21 @@ sign.in.user <- function(username, pass){
     obstoj <- 0
     # obstoj = 0, ce username in geslo ne obstajata,  1 ce obstaja
     uporabnik <- username
+    geslo <- pass
+    
+    
+    #Funkcija ne preveri enakosti hash in vnesenega hash gesla
+    #popravi
+    
+    
     hashGesla <- (userTable %>% filter(username == uporabnik) %>% collect() %>% pull(hash))[[1]]
-    if(pass == hashGesla) {
+    if(hashGesla == geslo){
       obstoj <- 1
     }
-    # if(checkpw(pass,hashGesla)){
+    
+    #if(toString(hashGesla) == toString(hashpw(toString(geslo)))){
     #   obstoj <- 1
     # }
-    print("X3")
     if(obstoj == 0){
       success <- -10
     }else{
@@ -63,7 +70,6 @@ sign.in.user <- function(username, pass){
                         collect() %>% pull(id))[[1]]
       success <- 1
     }
-    print("X4")
   },warning = function(w){
     print(w)
   },error = function(e){
@@ -74,4 +80,16 @@ sign.in.user <- function(username, pass){
   })
 }
 
-
+pridobi.ime.uporabnika <- function(userID){
+  # Pridobi ime vpisanega glede na userID
+  tryCatch({
+    drv <- dbDriver("PostgreSQL")
+    conn <- dbConnect(drv, dbname = db, host = host, user = user, password = password)
+    sqlInput<- build_sql("SELECT username FROM uporabnik WHERE id=",userID, con = conn)
+    userid <- dbGetQuery(conn, sqlInput)
+  },finally = {
+    dbDisconnect(conn)
+    return(unname(unlist(userid)))
+  }
+  )
+}

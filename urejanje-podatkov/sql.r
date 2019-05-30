@@ -21,9 +21,9 @@ tryCatch({
                               ime TEXT NOT NULL,
                               zacetek DATE,
                               konec DATE,
-                              zmagovalec INTEGER,
+                              zmagovalec TEXT,
                               obmocje TEXT,
-                              zrtve INTEGER)", con = conn)) # zmagovalec..... zacasni tip: INTEGER
+                              zrtve INTEGER)", con = conn))
   # 
   # dbSendQuery(conn, build_sql("CREATE TABLE drzava (
   #                             id SERIAL PRIMARY KEY,
@@ -75,7 +75,7 @@ tryCatch({
   
   dbSendQuery(conn, build_sql("CREATE TABLE komentar (
                               id SERIAL PRIMARY KEY,
-                              uporabnik_ime TEXT,
+                              uporabnik_id INTEGER,
                               vojna_id INTEGER,
                               besedilo TEXT,
                               cas TIMESTAMP,
@@ -112,8 +112,15 @@ tryCatch({
       
       dbSendQuery(conn, build_sql("GRANT CONNECT ON DATABASE sem2019_timotejv TO javnost", con = conn))
       dbSendQuery(conn, build_sql("GRANT SELECT ON ALL TABLES IN SCHEMA public TO javnost", con = conn))
+<<<<<<< HEAD
       dbSendQuery(conn, build_sql("GRANT INSERT ON TABLE uporabnik TO javnost", con = conn)) # insert uporabnik pri log in
       dbSendQuery(conn, build_sql("GRANT ALL ON ALL SEQUENCES IN SCHEMA public  TO javnost", con = conn)) # insert serial key pri uporabnik
+=======
+      dbSendQuery(conn, build_sql("GRANT INSERT ON TABLE uporabnik TO javnost", con = conn))
+      dbSendQuery(conn, build_sql("GRANT ALL ON ALL SEQUENCES IN SCHEMA public  TO javnost", con = conn))
+      dbSendQuery(conn, build_sql("GRANT INSERT ON TABLE komentar TO javnost", con = conn))
+      dbSendQuery(conn, build_sql("GRANT ALL ON ALL SEQUENCES IN SCHEMA public  TO javnost", con = conn))
+>>>>>>> bcfc7134c331fa60578bd19dfa504bc45ca5725b
       
       
     }, finally = {
