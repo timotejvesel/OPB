@@ -7,6 +7,7 @@ vpisniPanel <- tabPanel("SignIn", value="signIn",
                                    passwordInput("password","Password", value = ""),
                                    actionButton("signin_btn", "Sign In"),
                                    actionButton("signup_btn", "Sign Up"))
+                            #img(src = "https://github.com/timotejvesel/vojne/blob/master/slike/iwojima.jpg")
                           )))
 
 registracijaPanel <- tabPanel("SignUp", value = "signUp",

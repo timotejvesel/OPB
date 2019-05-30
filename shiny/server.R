@@ -224,7 +224,10 @@ shinyServer(function(input,output,session) {
     DT::datatable(tabela1) %>% DT::formatDate(c('Zacetek', 'Konec'), method = "toLocaleDateString") # datum v normalno obliko
     # +  pravilno sortiranje
   })
-
+# -------------------------------------------------------------------------------------------------
+  
+# slike
+#output$iwo <- renderImage({})
 
 
 # -------------------------------------------------------------------------------------------------
@@ -232,12 +235,13 @@ shinyServer(function(input,output,session) {
   
 najdi.komentar <- reactive({
   validate(need(!is.null(input$vojna), "Izberi vojno!"))
-  sql_komentar <- build_sql("SELECT * FROM komentar
-                            WHERE vojna_id =",input$vojna)
+  sql_komentar <- build_sql("SELECT username AS Uporabnik, besedilo AS Komentar, cas FROM komentar
+                            JOIN uporabnik ON uporabnik.id = komentar.uporabnik_id 
+                            WHERE vojna_id =",input$vojna, conn)
 })
   
 
-output$komentiranje <- DT::renderDataTable((DT::datatable(tabela2=najdi.komentar())))
+output$komentiranje <- DT::renderDataTable((DT::datatable(najdi.komentar())))
 
 output$izbrana.vojna <- renderUI({
   izbira_vojna = dbGetQuery(conn, build_sql("SELECT id, ime FROM vojna ORDER BY ime", con = conn))
@@ -249,7 +253,8 @@ output$izbrana.vojna <- renderUI({
 mnenje <- reactive({
   ideja <- renderText({input$komentar})
   sql2 <- build_sql("INSERT INTO komentar (uporabnik_id,vojna_id, besedilo,cas)
-                   VALUES(clan,",input$vojna,",", ideja, ",NOW()", con = conn)
+                   VALUES(",,",",input$vojna,",", ideja, ",NOW()", con = conn)
+  #Med vejice moramo dodati sklic na id uporabnika
   data2 <- dbGetQuery(conn, sql2)
   data2
   })
@@ -299,3 +304,5 @@ output$komentiranje <- DT::renderDataTable((DT::datatable(najdi.komentar())))
    }))
 
 })
+
+
