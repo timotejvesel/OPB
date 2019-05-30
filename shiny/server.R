@@ -258,18 +258,19 @@ output$izbrana.vojna <- renderUI({
 
 observeEvent(input$komentar_gumb,{
   ideja <- renderText({input$komentar})
-  sql2 <- build_sql("INSERT INTO komentar (uporabnik_id,vojna_id, besedilo,cas)
-                   VALUES"(clan,",",input$vojna,",", ideja, ",NOW()", con = conn))
-                   VALUES(userID(),",",input$vojna,",", input$komentar, ",NOW())", con = conn)
+  sql2 <- build_sql("INSERT INTO komentar (uporabnik_id, ime, vojna_id, besedilo, cas)
+                      VALUES(",userID(),",", pridobi.ime.uporabnika(userID()), "," ,input$vojna,",", input$komentar, ",NOW())", con = conn)  
   data2 <- dbGetQuery(conn, sql2)
   data2
-  shinyjs::reset("komentiranje")
+  shinyjs::reset("komentiranje") # reset po vpisu komentarja
   })
+
+### NOW() dve uri nazaj????????
   
 najdi.komentar <- reactive({
   input$komentar_gumb
   validate(need(!is.null(input$vojna), "Izberi vojno!"))
-  sql_komentar <- build_sql("SELECT * FROM komentar
+  sql_komentar <- build_sql("SELECT ime AS \"Uporabnik\", besedilo AS \"Komentar\", cas AS \"Cas\" FROM komentar
                             WHERE vojna_id =",input$vojna, con = conn)
   komentarji <- dbGetQuery(conn, sql_komentar)
   komentarji
