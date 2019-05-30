@@ -11,7 +11,7 @@ sign.up.user <- function(username, pass){
   clan <- username
   
   useraccount <- data.frame(username = clan, password=pass)
-  
+  uporabnikID <- NULL
   
   tryCatch({
     drv <- dbDriver("PostgreSQL")
@@ -23,12 +23,12 @@ sign.up.user <- function(username, pass){
     }
     # Ce nam if stavek vrne True, potem v bazo uporabnik dodamo uporabnika z zaporedno stevilko, uporabniskim in geslom
     sql_prijava <- build_sql("INSERT INTO uporabnik(username,hash)
-                             VALUES(",clan,",",pass,")", con = conn)
-    data_sql_prijava <- dbGetQuery(conn,sql_prijava)
+                             VALUES(",clan,",",pass,") RETURNING id", con = conn)
+    uporabnikID <- dbGetQuery(conn,sql_prijava)[[1]]
     success <- 1
   }, finally = {
     dbDisconnect(conn)
-    return(success)
+    return(list(success, uporabnikID))
   })
 }
 

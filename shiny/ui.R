@@ -33,7 +33,7 @@ sidebar <- dashboardSidebar(hr(),
                                         menuItem("Pregled vojn",tabName = "vojne")),
                             sidebarMenu(id="stat", 
                                         menuItem("Statistika po sodelujocih", tabName = "stat")),
-                            sidebarMenu(id="komentar", 
+                            sidebarMenu(id="komentar_tab", 
                                         menuItem("Civilen diskurz o vojnah", tabName = "koment"))
                             
 )
@@ -60,15 +60,15 @@ body <- dashboardBody(
             mainPanel(DT::dataTableOutput("voj")
             ))),
     tabItem(tabName = "stat",
-            fluidRow(sidebarPanel(
-              uiOutput("izbor.statistika")
-            ),
+            #fluidRow(sidebarPanel(
+             # uiOutput("izbor.statistika")
+            #),
             mainPanel(DT::dataTableOutput("stat")
-            ))),
+            )),
     tabItem(tabName = "koment",
             fluidRow(
               sidebarPanel(textInput("komentar", "Dodaj svoje mnenje", value = ""),
-                           actionButton(inputId = "komentar",label = "Dodaj komentar"),
+                           actionButton(inputId = "komentar_gumb",label = "Dodaj komentar"),
                       verbatimTextOutput("value"),
                       uiOutput("izbrana.vojna")),
               mainPanel(DT::dataTableOutput("komentiranje"))
