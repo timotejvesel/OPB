@@ -248,7 +248,7 @@ output$izbrana.vojna <- renderUI({
 })
 mnenje <- reactive({
   ideja <- renderText({input$komentar})
-  sql2 <- build_sql("INSERT INTO komentar (id,uporabnik_ime,vojna_id, besedilo,cas)
+  sql2 <- build_sql("INSERT INTO komentar (uporabnik_id,vojna_id, besedilo,cas)
                    VALUES(clan,",input$vojna,",", ideja, ",NOW()", con = conn)
   data2 <- dbGetQuery(conn, sql2)
   data2
