@@ -49,20 +49,10 @@ sign.in.user <- function(username, pass){
     # obstoj = 0, ce username in geslo ne obstajata,  1 ce obstaja
     uporabnik <- username
     geslo <- pass
-    
-    
-    #Funkcija ne preveri enakosti hash in vnesenega hash gesla
-    #popravi
-    
-    
     hashGesla <- (userTable %>% filter(username == uporabnik) %>% collect() %>% pull(hash))[[1]]
-    if(hashGesla == geslo){
-      obstoj <- 1
+    if(checkpw(geslo, hashGesla)){
+       obstoj <- 1
     }
-    
-    #if(toString(hashGesla) == toString(hashpw(toString(geslo)))){
-    #   obstoj <- 1
-    # }
     if(obstoj == 0){
       success <- -10
     }else{
