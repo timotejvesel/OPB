@@ -1,4 +1,4 @@
 db = 'sem2019_timotejv'
-host = 'baza.fmf.uni-lj.si'
+host = '193.2.67.10'
 user = 'javnost'
 password = 'javnogeslo'

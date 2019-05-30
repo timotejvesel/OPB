@@ -1,7 +1,7 @@
 #server za shiny
 #Najprej zaženi datoteko libraries.r
 
-source("../lib/libraries.r")
+source("../lib/libraries.R")
 source("../auth_public.r")
 source("serverFunctions.R")
 
@@ -171,7 +171,7 @@ shinyServer(function(input,output,session) {
   })
   
   
-  output$sodel <- DT::renderDataTable(DT::datatable({ #glavna tabela rezultatov
+  output$sodel <- DT::renderDataTable(DT::datatable({     #glavna tabela rezultatov
     tabela=najdi.sodelujoci()
   }) %>% DT::formatDate(c('Zacetek sodelovanja', 'Konec sodelovanja'), method = "toLocaleDateString")) # datum v normalno obliko 
                                                                                 # +  pravilno sortiranje
@@ -285,17 +285,18 @@ output$komentiranje <- DT::renderDataTable((DT::datatable(najdi.komentar())))
 
 
  najdi.statistika <- reactive({
-   validate(need(!is.null(input$statistika), "Izberi sodelujocega!"))
-   sql3 <- build_sql("SELECT sodelujoci.id, sodelujoci.ime, COUNT(*) AS stevilo_vojn, SUM(sodelovanje_koal.umrli) AS zrtve,
-          SUM(sodelovanje_koal.umrli) / COUNT(*) AS zrtve_na_vojno, SUM(sodelovanje_koal.konec - sodelovanje_koal.zacetek) AS stevilo_dni_vojskovanja
+   # validate(need(!is.null(input$statistika), "Izberi sodelujocega!"))
+   sql3 <- build_sql("SELECT sodelujoci.id, sodelujoci.ime, COUNT(*) AS \"Stevilo vojn\", SUM(sodelovanje_koal.umrli) AS \"Zrtve\",
+          SUM(sodelovanje_koal.umrli) / COUNT(*) AS \"Stevilo zrtev na vojno\", SUM(sodelovanje_koal.konec - sodelovanje_koal.zacetek) AS stevilo_dni_vojskovanja
           FROM sodelovanje_koal
           JOIN koalicija ON koalicija.id = koalicija_id
           JOIN vojna ON vojna.id = sodelovanje_vojna
           JOIN sodelujoci ON sodelujoci.id = sodelovanje_koal.sodelujoci_id
-          GROUP BY(sodelujoci.id),
-          WHERE sodelujoci.id = ", input$statistika, con=conn)
+          WHERE TRUE 
+          GROUP BY(sodelujoci.id)", con=conn)
      data3 <- dbGetQuery(conn, sql3)
      data3
+     data3 <- data3[,c(2:5)]
 
    })
 
