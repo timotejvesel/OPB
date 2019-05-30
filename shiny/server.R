@@ -232,12 +232,9 @@ shinyServer(function(input,output,session) {
 
 
 # -------------------------------------------------------------------------------------------------
-<<<<<<< HEAD
-  
+
 #komentarji 
-  
-=======
-#komentarji 
+
 
 # najdi.komentar <- reactive({
 #   validate(need(stevec() > 0 && !is.null(input$vojna), "Izberi vojno!"))
@@ -251,7 +248,6 @@ shinyServer(function(input,output,session) {
 #   DT::datatable(najdi.komentar())
 #   })
 
->>>>>>> 06afebda1a2adaa4163318be34fb8c28032b0c49
 output$izbrana.vojna <- renderUI({
   izbira_vojna = dbGetQuery(conn, build_sql("SELECT id, ime FROM vojna ORDER BY ime", con = conn))
   selectInput("vojna",
@@ -263,12 +259,8 @@ output$izbrana.vojna <- renderUI({
 observeEvent(input$komentar_gumb,{
   ideja <- renderText({input$komentar})
   sql2 <- build_sql("INSERT INTO komentar (uporabnik_id,vojna_id, besedilo,cas)
-<<<<<<< HEAD
                    VALUES"(clan,",",input$vojna,",", ideja, ",NOW()", con = conn))
-=======
-                   VALUES(",userID(),",",input$vojna,",", input$komentar, ",NOW())", con = conn)
-  #Med vejice moramo dodati sklic na id uporabnika
->>>>>>> 06afebda1a2adaa4163318be34fb8c28032b0c49
+                   VALUES(userID(),",",input$vojna,",", input$komentar, ",NOW())", con = conn)
   data2 <- dbGetQuery(conn, sql2)
   data2
   shinyjs::reset("komentiranje")
