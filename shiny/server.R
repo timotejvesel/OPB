@@ -228,17 +228,9 @@ shinyServer(function(input,output,session) {
 
 
 # -------------------------------------------------------------------------------------------------
+  
 #komentarji 
   
-najdi.komentar <- reactive({
-  validate(need(!is.null(input$vojna), "Izberi vojno!"))
-  sql_komentar <- build_sql("SELECT * FROM komentar
-                            WHERE vojna_id =",input$vojna)
-})
-  
-
-output$komentiranje <- DT::renderDataTable((DT::datatable(tabela2=najdi.komentar())))
-
 output$izbrana.vojna <- renderUI({
   izbira_vojna = dbGetQuery(conn, build_sql("SELECT id, ime FROM vojna ORDER BY ime", con = conn))
   selectInput("vojna",
@@ -248,8 +240,8 @@ output$izbrana.vojna <- renderUI({
 })
 mnenje <- reactive({
   ideja <- renderText({input$komentar})
-  sql2 <- build_sql("INSERT INTO komentar (id,uporabnik_ime,vojna_id, besedilo,cas)
-                   VALUES(clan,",input$vojna,",", ideja, ",NOW()", con = conn)
+  sql2 <- build_sql("INSERT INTO komentar (uporabnik_id,vojna_id, besedilo,cas)
+                   VALUES"(clan,",",input$vojna,",", ideja, ",NOW()", con = conn))
   data2 <- dbGetQuery(conn, sql2)
   data2
   })
