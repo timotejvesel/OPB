@@ -32,7 +32,7 @@ sidebar <- dashboardSidebar(hr(),
                                         menuItem("Pregled vojn",tabName = "vojne")),
                             sidebarMenu(id="stat", 
                                         menuItem("Statistika po sodelujocih", tabName = "stat")),
-                            sidebarMenu(id="kometnar", 
+                            sidebarMenu(id="komentar", 
                                         menuItem("Civilen diskurz o vojnah", tabName = "koment"))
                             
 )
