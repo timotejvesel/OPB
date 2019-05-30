@@ -11,24 +11,24 @@ sign.up.user <- function(username, pass){
   clan <- username
   
   useraccount <- data.frame(username = clan, password=pass)
-  
+  uporabnikID <- NULL
   
   tryCatch({
     drv <- dbDriver("PostgreSQL")
     conn <- dbConnect(drv, dbname = db, host = host, user = user, password = password)
     userTable <- tbl(conn, "uporabnik")
-    # Pogledamo, ?e je uporabnisko ime ze zasedeno
+    # Pogledamo, ce je uporabnisko ime ze zasedeno
     if(0 != dim((userTable %>% filter(username == clan) %>% collect()))[1]){
       success <- -10
     }
     # Ce nam if stavek vrne True, potem v bazo uporabnik dodamo uporabnika z zaporedno stevilko, uporabniskim in geslom
     sql_prijava <- build_sql("INSERT INTO uporabnik(username,hash)
-                             VALUES(",clan,",",pass,")", con = conn)
-    data_sql_prijava <- dbGetQuery(conn,sql_prijava)
+                             VALUES(",clan,",",pass,") RETURNING id", con = conn)
+    uporabnikID <- dbGetQuery(conn,sql_prijava)[[1]]
     success <- 1
   }, finally = {
     dbDisconnect(conn)
-    return(success)
+    return(list(success, uporabnikID))
   })
 }
 
@@ -49,20 +49,10 @@ sign.in.user <- function(username, pass){
     # obstoj = 0, ce username in geslo ne obstajata,  1 ce obstaja
     uporabnik <- username
     geslo <- pass
-    
-    
-    #Funkcija ne preveri enakosti hash in vnesenega hash gesla
-    #popravi
-    
-    
     hashGesla <- (userTable %>% filter(username == uporabnik) %>% collect() %>% pull(hash))[[1]]
-    if(hashGesla == geslo){
-      obstoj <- 1
+    if(checkpw(geslo, hashGesla)){
+       obstoj <- 1
     }
-    
-    #if(toString(hashGesla) == toString(hashpw(toString(geslo)))){
-    #   obstoj <- 1
-    # }
     if(obstoj == 0){
       success <- -10
     }else{

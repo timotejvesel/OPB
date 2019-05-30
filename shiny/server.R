@@ -1,7 +1,7 @@
 #server za shiny
 #Najprej zaženi datoteko libraries.r
 
-source("../lib/libraries.r")
+source("../lib/libraries.R")
 source("../auth_public.r")
 source("serverFunctions.R")
 
@@ -16,7 +16,7 @@ shinyServer(function(input,output,session) {
   loggedIn <- reactiveVal(FALSE)    # Placeholder za logout gumb oz vrednost gumba
   
   dbGetQuery(conn, "SET CLIENT_ENCODING TO 'utf8'; SET NAMES 'utf8'")
-  
+
   cancel.onSessionEnded <- session$onSessionEnded(function() {
     dbDisconnect(conn) #ko zapremo shiny naj se povezava do baze zapre
   })
@@ -73,7 +73,8 @@ shinyServer(function(input,output,session) {
                               c(input$SignUpUserName, input$SignUpPassword)))){
                    success <- -1
                  }else{
-                   success <- sign.up.user(input$SignUpUserName, input$SignUpPassword)
+                   signUpReturn <- sign.up.user(input$SignUpUserName, input$SignUpPassword)
+                   success <- signUpReturn[[1]]
                  }
                  if(success==1){
                    showModal(modalDialog(
@@ -171,7 +172,7 @@ shinyServer(function(input,output,session) {
   })
   
   
-  output$sodel <- DT::renderDataTable(DT::datatable({ #glavna tabela rezultatov
+  output$sodel <- DT::renderDataTable(DT::datatable({     #glavna tabela rezultatov
     tabela=najdi.sodelujoci()
   }) %>% DT::formatDate(c('Zacetek sodelovanja', 'Konec sodelovanja'), method = "toLocaleDateString")) # datum v normalno obliko 
                                                                                 # +  pravilno sortiranje
@@ -224,13 +225,33 @@ shinyServer(function(input,output,session) {
     DT::datatable(tabela1) %>% DT::formatDate(c('Zacetek', 'Konec'), method = "toLocaleDateString") # datum v normalno obliko
     # +  pravilno sortiranje
   })
-
+# -------------------------------------------------------------------------------------------------
+  
+# slike
+#output$iwo <- renderImage({})
 
 
 # -------------------------------------------------------------------------------------------------
+<<<<<<< HEAD
   
 #komentarji 
   
+=======
+#komentarji 
+
+# najdi.komentar <- reactive({
+#   validate(need(stevec() > 0 && !is.null(input$vojna), "Izberi vojno!"))
+#   sql_komentar <- build_sql("SELECT username AS Uporabnik, besedilo AS Komentar, cas FROM komentar
+#                             JOIN uporabnik ON uporabnik.id = komentar.uporabnik_id 
+#                             WHERE vojna_id =",input$vojna, conn)
+# })
+#   
+# 
+# output$komentiranje <- DT::renderDataTable({
+#   DT::datatable(najdi.komentar())
+#   })
+
+>>>>>>> 06afebda1a2adaa4163318be34fb8c28032b0c49
 output$izbrana.vojna <- renderUI({
   izbira_vojna = dbGetQuery(conn, build_sql("SELECT id, ime FROM vojna ORDER BY ime", con = conn))
   selectInput("vojna",
@@ -238,15 +259,23 @@ output$izbrana.vojna <- renderUI({
               choices = setNames(izbira_vojna$id, izbira_vojna$ime)
   )
 })
-mnenje <- reactive({
+
+observeEvent(input$komentar_gumb,{
   ideja <- renderText({input$komentar})
   sql2 <- build_sql("INSERT INTO komentar (uporabnik_id,vojna_id, besedilo,cas)
+<<<<<<< HEAD
                    VALUES"(clan,",",input$vojna,",", ideja, ",NOW()", con = conn))
+=======
+                   VALUES(",userID(),",",input$vojna,",", input$komentar, ",NOW())", con = conn)
+  #Med vejice moramo dodati sklic na id uporabnika
+>>>>>>> 06afebda1a2adaa4163318be34fb8c28032b0c49
   data2 <- dbGetQuery(conn, sql2)
   data2
+  shinyjs::reset("komentiranje")
   })
   
 najdi.komentar <- reactive({
+  input$komentar_gumb
   validate(need(!is.null(input$vojna), "Izberi vojno!"))
   sql_komentar <- build_sql("SELECT * FROM komentar
                             WHERE vojna_id =",input$vojna, con = conn)
@@ -263,26 +292,27 @@ output$komentiranje <- DT::renderDataTable((DT::datatable(najdi.komentar())))
 
    izbira_statistika = dbGetQuery(conn, build_sql("SELECT id, ime FROM sodelujoci ORDER BY ime", con = conn))
 
-   selectInput("statistika",
-               label = "Izberi sodelujocega:",
-               choices = setNames(izbira_statistika$id, izbira_statistika$ime)
+   #selectInput("statistika",
+    #           label = "Izberi sodelujocega:",
+    #           choices = setNames(izbira_statistika$id, izbira_statistika$ime)
               
-   )
+   #)
  })
 
 
  najdi.statistika <- reactive({
-   validate(need(!is.null(input$statistika), "Izberi sodelujocega!"))
-   sql3 <- build_sql("SELECT sodelujoci.id, sodelujoci.ime, COUNT(*) AS stevilo_vojn, SUM(sodelovanje_koal.umrli) AS zrtve,
-          SUM(sodelovanje_koal.umrli) / COUNT(*) AS zrtve_na_vojno, SUM(sodelovanje_koal.konec - sodelovanje_koal.zacetek) AS stevilo_dni_vojskovanja
+   # validate(need(!is.null(input$statistika), "Izberi sodelujocega!"))
+   sql3 <- build_sql("SELECT sodelujoci.id, sodelujoci.ime, COUNT(*) AS \"Stevilo vojn\", SUM(sodelovanje_koal.umrli) AS \"Zrtve\",
+          SUM(sodelovanje_koal.umrli) / COUNT(*) AS \"Stevilo zrtev na vojno\", SUM(sodelovanje_koal.konec - sodelovanje_koal.zacetek) AS stevilo_dni_vojskovanja
           FROM sodelovanje_koal
           JOIN koalicija ON koalicija.id = koalicija_id
           JOIN vojna ON vojna.id = sodelovanje_vojna
           JOIN sodelujoci ON sodelujoci.id = sodelovanje_koal.sodelujoci_id
-          GROUP BY(sodelujoci.id),
-          WHERE sodelujoci.id = ", input$statistika, con=conn)
+          WHERE TRUE 
+          GROUP BY(sodelujoci.id)", con=conn)
      data3 <- dbGetQuery(conn, sql3)
      data3
+     data3 <- data3[,c(2:5)]
 
    })
 
@@ -291,3 +321,5 @@ output$komentiranje <- DT::renderDataTable((DT::datatable(najdi.komentar())))
    }))
 
 })
+
+
