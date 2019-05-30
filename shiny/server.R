@@ -266,6 +266,7 @@ observeEvent(input$komentar_gumb,{
   })
 
 ### NOW() dve uri nazaj????????
+#mogoče druga časovna cona???
   
 najdi.komentar <- reactive({
   input$komentar_gumb
@@ -276,6 +277,7 @@ najdi.komentar <- reactive({
   komentarji
 })
 output$komentiranje <- DT::renderDataTable((DT::datatable(najdi.komentar())))
+
 
 # -------------------------------------------------------------------------------------------------
 

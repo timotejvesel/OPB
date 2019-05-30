@@ -6,8 +6,9 @@ vpisniPanel <- tabPanel("SignIn", value="signIn",
                                    textInput("userName","User name", value= ""),
                                    passwordInput("password","Password", value = ""),
                                    actionButton("signin_btn", "Sign In"),
-                                   actionButton("signup_btn", "Sign Up"))
-                            #img(src = "https://github.com/timotejvesel/vojne/blob/master/slike/iwojima.jpg")
+                                   actionButton("signup_btn", "Sign Up")),
+                            img(src = "https://raw.githubusercontent.com/timotejvesel/vojne/master/slike/iwojima.jpg",
+                                align = "center")
                           )))
 
 registracijaPanel <- tabPanel("SignUp", value = "signUp",
@@ -71,7 +72,8 @@ body <- dashboardBody(
                            actionButton(inputId = "komentar_gumb",label = "Dodaj komentar"),
                       verbatimTextOutput("value"),
                       uiOutput("izbrana.vojna")),
-              mainPanel(DT::dataTableOutput("komentiranje"))
+              mainPanel(p("Prosimo, da na strani drzite komentarje na primerni ravni"),
+                DT::dataTableOutput("komentiranje"))
                       
             )))
   )
