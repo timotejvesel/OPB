@@ -282,6 +282,7 @@ output$komentiranje <- DT::renderDataTable((DT::datatable(najdi.komentar())))
 # -------------------------------------------------------------------------------------------------
 
 # statistika
+ output$drsnik <- renderPlot({print(vojne_po_letih)})
 
  output$izbor.statistika <- renderUI({
 

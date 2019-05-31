@@ -64,7 +64,8 @@ body <- dashboardBody(
             #fluidRow(sidebarPanel(
              # uiOutput("izbor.statistika")
             #),
-            mainPanel(DT::dataTableOutput("stat")
+            mainPanel(DT::dataTableOutput("stat"),
+                      plotOutput("drsnik")
             )),
     tabItem(tabName = "koment",
             fluidRow(
