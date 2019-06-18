@@ -1,3 +1,7 @@
+source("../lib/libraries.r")
+source("../auth_public.r")
+source("serverFunctions.R")
+
 vpisniPanel <- tabPanel("SignIn", value="signIn",
                         fluidPage(
                           fluidRow(
