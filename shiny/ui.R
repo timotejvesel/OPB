@@ -4,16 +4,15 @@ source("serverFunctions.R")
 
 vpisniPanel <- tabPanel("SignIn", value="signIn",
                         fluidPage(
+                          HTML('<body background = "https://raw.githubusercontent.com/timotejvesel/vojne/master/slike/iwojima.jpg"></body>'),
                           fluidRow(
                             column(width = 12,
-                                   align = "center",
+                                   align = "middle",
                                    textInput("userName","User name", value= ""),
                                    passwordInput("password","Password", value = ""),
                                    actionButton("signin_btn", "Sign In"),
-                                   actionButton("signup_btn", "Sign Up")),
-                            img(src = "https://raw.githubusercontent.com/timotejvesel/vojne/master/slike/iwojima.jpg",
-                                align = "center")
-                          )))
+                                   actionButton("signup_btn", "Sign Up"))
+                            )))
 
 registracijaPanel <- tabPanel("SignUp", value = "signUp",
                               fluidPage(
