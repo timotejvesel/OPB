@@ -282,7 +282,7 @@ output$komentiranje <- DT::renderDataTable((DT::datatable(najdi.komentar())))
 # -------------------------------------------------------------------------------------------------
 
 # statistika
- output$drsnik <- renderPlot({print(vojne_po_letih)})
+ #output$drsnik <- renderPlot({print(vojne_po_letih)})
 
  output$izbor.statistika <- renderUI({
 
@@ -298,7 +298,7 @@ output$komentiranje <- DT::renderDataTable((DT::datatable(najdi.komentar())))
 
  najdi.statistika <- reactive({
    # validate(need(!is.null(input$statistika), "Izberi sodelujocega!"))
-   sql3 <- build_sql("SELECT sodelujoci.id, sodelujoci.ime, COUNT(*) AS \"Stevilo vojn\", SUM(sodelovanje_koal.umrli) AS \"Zrtve\",
+   sql3 <- build_sql("SELECT sodelujoci.id, sodelujoci.ime AS \"Ime\", COUNT(*) AS \"Stevilo vojn\", SUM(sodelovanje_koal.umrli) AS \"Zrtve\",
           SUM(sodelovanje_koal.umrli) / COUNT(*) AS \"Stevilo zrtev na vojno\", SUM(sodelovanje_koal.konec - sodelovanje_koal.zacetek) AS stevilo_dni_vojskovanja
           FROM sodelovanje_koal
           JOIN koalicija ON koalicija.id = koalicija_id
