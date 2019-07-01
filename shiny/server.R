@@ -272,7 +272,9 @@ najdi.komentar <- reactive({
   sql_komentar <- build_sql("SELECT ime AS \"Uporabnik\", besedilo AS \"Komentar\", cas AS \"Cas\" FROM komentar
                             WHERE vojna_id =",input$vojna, con = conn)
   komentarji <- dbGetQuery(conn, sql_komentar)
+  validate(need(nrow(komentarji) > 0, "Ni komentarjev."))
   komentarji
+  
 })
 output$komentiranje <- DT::renderDataTable(DT::datatable(najdi.komentar()) %>%
                                              DT::formatDate("Cas", method="toLocaleString"))
