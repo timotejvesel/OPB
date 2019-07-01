@@ -265,8 +265,6 @@ observeEvent(input$komentar_gumb,{
   shinyjs::reset("komentiranje") # reset po vpisu komentarja
   })
 
-### NOW() dve uri nazaj????????
-#mogoče druga časovna cona???
   
 najdi.komentar <- reactive({
   input$komentar_gumb
@@ -276,7 +274,8 @@ najdi.komentar <- reactive({
   komentarji <- dbGetQuery(conn, sql_komentar)
   komentarji
 })
-output$komentiranje <- DT::renderDataTable((DT::datatable(najdi.komentar())))
+output$komentiranje <- DT::renderDataTable(DT::datatable(najdi.komentar()) %>%
+                                              DT::formatDate("Cas", method="toLocaleString"))
 
 
 # -------------------------------------------------------------------------------------------------
