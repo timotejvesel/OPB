@@ -58,12 +58,14 @@ tryCatch({
                               zacetek DATE,
                               konec DATE,
                               umrli INTEGER,
+                              PRIMARY KEY (sodelujoci_id, koalicija_id),
                               FOREIGN KEY (sodelujoci_id) REFERENCES sodelujoci(id),
                               FOREIGN KEY (koalicija_id) REFERENCES koalicija(id))", con = conn))
   
   dbSendQuery(conn, build_sql("CREATE TABLE povzroci (
                               povzrocitelj_id INTEGER,
                               povzrocena_id INTEGER NOT NULL,
+                              PRIMARY KEY (povzrocitelj_id, povzrocena_id),
                               FOREIGN KEY(povzrocena_id)  REFERENCES vojna(id),
                               FOREIGN KEY(povzrocitelj_id) REFERENCES vojna(id))", con = conn))
   

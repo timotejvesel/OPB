@@ -211,8 +211,8 @@ shinyServer(function(input,output,session) {
                     LEFT JOIN povzroci povzrocenec ON povzrocenec.povzrocitelj_id = glavna.id
                     LEFT JOIN vojna povzrocena ON povzrocenec.povzrocena_id = povzrocena.id
                     WHERE TRUE", con=conn)
-    if (!is.null(input$min_max[1])) {
-      sql1 <- build_sql(sql1, " AND (glavna.zrtve BETWEEN ", input$min_max[1], " AND ", input$min_max[2], " OR glavna.zrtve IS NULL)", con=conn)
+    if (!is.null(input$min_max1)) {
+      sql1 <- build_sql(sql1, " AND (COALESCE(glavna.zrtve,0) BETWEEN ", input$min_max1, " AND ", input$min_max2, " OR COALESCE(glavna.zrtve,0) IS NULL)", con=conn)
     }
     data1 <- dbGetQuery(conn, sql1)
     data1
@@ -275,7 +275,7 @@ najdi.komentar <- reactive({
   komentarji
 })
 output$komentiranje <- DT::renderDataTable(DT::datatable(najdi.komentar()) %>%
-                                              DT::formatDate("Cas", method="toLocaleString"))
+                                             DT::formatDate("Cas", method="toLocaleString"))
 
 
 # -------------------------------------------------------------------------------------------------

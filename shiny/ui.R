@@ -51,16 +51,14 @@ body <- dashboardBody(
             mainPanel(DT::dataTableOutput("sodel")
             ))),
     tabItem(tabName = "vojne",
-            fluidRow(sidebarPanel(
-              sliderInput("min_max",
-                          "Stevilo zrtev:",
-                          min = 0,
-                          max = 17000000,
-                          value = c(0,17000000),
-                          step = 1,
-                          post = "",
-                          sep = ".")
-            ),
+            fluidRow(
+              column(5,
+                     numericInput("min_max1", "Stevilo zrtev od", min=0, max=17000000, value=0)
+              ),
+              column(5,
+                     numericInput("min_max2", "Stevilo zrtev do", min=0, max=17000000, value=17000000)
+              )
+            ,
             mainPanel(DT::dataTableOutput("voj")
             ))),
     tabItem(tabName = "stat",
